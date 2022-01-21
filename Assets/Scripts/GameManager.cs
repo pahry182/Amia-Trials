@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
     public GameObject[] _normalEnemyPool;
     public GameObject[] _bossEnemyPool;
-    public EnemySpawnManager _enemySpawnManager;
+    [HideInInspector] public EnemySpawnManager _enemySpawnManager;
     public MainSceneController _msC;
     public UnitBase _player;
     public new Audio audio = new Audio();
