@@ -9,8 +9,6 @@ public class EnemySpawnManager : MonoBehaviour
 
     private bool isCheckerRunning;
 
-    public GameObject[] _enemyPool;
-
     public float enemyRespawnDelay = 1f;
 
     private void Awake()
@@ -33,23 +31,46 @@ public class EnemySpawnManager : MonoBehaviour
 
     public IEnumerator SpawnEnemy()
     {
+        if (GameManager.Instance.isPlayerRespawning)
+        {
+            GameManager.Instance.isPlayerRespawning = false;
+        }
+        else
+        {
+            GameManager.Instance.currentWave++;
+
+        }
+
+        AudioCheck();
+
         yield return new WaitUntil(() => GameManager.Instance.isBattleStarted == true);
         yield return new WaitForSeconds(enemyRespawnDelay);
 
         GameManager.Instance.isEnemyPresent = true;
-        if (GameManager.Instance.isRespawning)
+        GameManager.Instance.SetCheckpoint();
+        int select = Random.Range(0, GameManager.Instance._normalEnemyPool.Length);
+        if (GameManager.Instance.currentWave % 4 == 0)
         {
-            GameManager.Instance.isRespawning = false;
-        } 
+            Instantiate(GameManager.Instance._bossEnemyPool[select], new Vector3(Random.Range(-8f, 8f), 0f, 0f), Quaternion.identity);
+        }
         else
         {
-            GameManager.Instance.currentWave++;
-            
+            Instantiate(GameManager.Instance._normalEnemyPool[select], new Vector3(Random.Range(-8f, 8f), 0f, 0f), Quaternion.identity);
         }
-        GameManager.Instance.SetCheckpoint();
-        Instantiate(_enemyPool[0], new Vector3(Random.Range(-8f, 8f), 0f, 0f), Quaternion.identity);
         _enemy = GameObject.FindGameObjectWithTag("Enemy").GetComponent<UnitBase>();
         _playerAI.DetectTarget();
+    }
+
+    private void AudioCheck()
+    {
+        if ((GameManager.Instance.currentWave) % 4 == 0 && GameManager.Instance.currentWave != 0)
+        {
+            GameManager.Instance.PlayBgm("Battle_Boss");
+        }
+        else
+        {
+            GameManager.Instance.PlayBgm("Battle_Normal");
+        }
     }
 
     IEnumerator CheckIfEnemyDie()

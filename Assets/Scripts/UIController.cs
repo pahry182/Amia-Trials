@@ -7,18 +7,22 @@ public class UIController : MonoBehaviour
 {
     public IEnumerator FadeIn(CanvasGroup container, float duration)
     {
+        container.interactable = false;
         container.gameObject.SetActive(true);
         container.alpha = 0f;
         yield return new WaitForSeconds(0);
         container.DOFade(1f, duration).SetUpdate(true);
+        container.interactable = true;
     }
 
     public IEnumerator FadeOut(CanvasGroup container, float duration)
     {
+        container.interactable = false;
         container.alpha = 1f;
         container.DOFade(0f, duration).SetEase(Ease.InQuint);
         yield return new WaitForSeconds(duration);
         container.gameObject.SetActive(false);
+        container.interactable = true;
     }
 
     public IEnumerator AnimationWideIn(RectTransform container, float duration)

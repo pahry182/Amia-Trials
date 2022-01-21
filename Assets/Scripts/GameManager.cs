@@ -6,6 +6,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+    public GameObject[] _normalEnemyPool;
+    public GameObject[] _bossEnemyPool;
     public EnemySpawnManager _enemySpawnManager;
     public MainSceneController _msC;
     public UnitBase _player;
@@ -14,13 +16,25 @@ public class GameManager : MonoBehaviour
 
     public bool isBattleStarted;
     public bool isEnemyPresent;
-    public bool isRespawning;
+    public bool isPlayerRespawning;
     public bool isUpdatingVolume;
+    public bool isNormalBattleThemePlayed;
     public int currentWave;
     public int currentLife;
     public int setLife = 3;
     public int currentCheckpoint = 1;
     public int nextCheckpoint = 2;
+
+    [Header("Player Base Stat")]
+    public float baseHp = 150f;
+    public float baseMp = 100f;
+    public float baseXp = 100;
+    public float baseAtt = 12;
+    public float basedef = 2;
+
+    [Header("Enemy")]
+    public float elementalRelationPoint = 0.5f;
+    public float elementalProwessPoint = 0.2f;
 
     [Header("Statistics")]
     public int normalKillCount;
@@ -47,6 +61,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         SetupAudio();
+        PlayBgm("Menu_Main");
     }
 
     // Update is called once per frame
@@ -87,6 +102,7 @@ public class GameManager : MonoBehaviour
         if (_target.tag == "Enemy")
         {
             isEnemyPresent = false;
+            _player.currentHp = _player.maxHp;
         }
         else if (_target.tag == "Player")
         {
@@ -106,6 +122,14 @@ public class GameManager : MonoBehaviour
     public void ResetState()
     {
         _player.ReviveUnit();
+        _player.unitLevel = 1;
+        _player.maxHp = baseHp;
+        _player.maxMp = baseMp;
+        _player.maxXp = baseXp;
+        _player.currentHp = baseHp;
+        _player.currentXp = 0f;
+        _player.att = baseAtt;
+        _player.def = basedef;
         _enemySpawnManager.RemoveEnemy();
         _msC.RespawnButton.interactable = true;
         isEnemyPresent = false;
@@ -125,7 +149,7 @@ public class GameManager : MonoBehaviour
         _player.ReviveUnit();
         currentLife--;
         currentWave = currentCheckpoint;
-        isRespawning = true;
+        isPlayerRespawning = true;
         _enemySpawnManager.RemoveEnemy();
     }
 
@@ -153,6 +177,8 @@ public class GameManager : MonoBehaviour
     public void PlayBgm(string name)
     {
         Sound bgm = Array.Find(audio.backgroundMusics, sound => sound.name == name);
+        print(bgm.name + name);
+        if (bgm.name == name && bgm.audioSource.isPlaying) return;
         if (bgm == null)
         {
             print("Audio " + name + " not found!!");

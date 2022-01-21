@@ -61,7 +61,7 @@ public class UnitAI : MonoBehaviour
         if (gizmoShow)
         {
             Gizmos.color = gizmoColor;
-            Gizmos.DrawSphere(transform.position, attRange);
+            Gizmos.DrawWireSphere(transform.position, attRange);
         }
     }
 
@@ -86,9 +86,8 @@ public class UnitAI : MonoBehaviour
         if (opponentDetected && !target.isUnitDead && !_thisUnit.isUnitDead)
         {
             onOpponentDetected?.Invoke(collider.gameObject);
-            
+            _thisUnit.unitState = UnitAnimState.attacking;
             isTargetInAttackRange = true;
-            print(targetTag);
             _thisUnit.Attack();
         }
         else

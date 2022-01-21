@@ -16,10 +16,16 @@ public class MainSceneController : UIController
     public GameObject resultText;
     public Button RespawnButton;
 
-
     private void Update()
     {
-        waveText.text = "Wave: " + GameManager.Instance.currentWave;
+        if (GameManager.Instance.currentWave % 4 == 0 && GameManager.Instance.currentWave != 0)
+        {
+            waveText.text = "Wave: " + GameManager.Instance.currentWave + " (Boss)";
+        }
+        else
+        {
+            waveText.text = "Wave: " + GameManager.Instance.currentWave;
+        }
         lifeText.text = "Life: " + GameManager.Instance.currentLife;
         checkpointText.text = "Checkpoint: " + GameManager.Instance.currentCheckpoint;
     }
@@ -29,7 +35,7 @@ public class MainSceneController : UIController
         StartCoroutine(FadeOut(backgroundPanel, 1f));
         StartCoroutine(FadeOut(startMenuPanel, 0.4f));
         StartCoroutine(FadeIn(ingamePanel, 1f));
-        GameManager.Instance.PlayBgm("Battle_Normal");
+        //GameManager.Instance.PlayBgm("Battle_Normal");
         StartCoroutine(GameManager.Instance._enemySpawnManager.SpawnEnemy());
         //GameManager.Instance.currentLife = GameManager.Instance.setLife;
 
@@ -41,6 +47,7 @@ public class MainSceneController : UIController
     public IEnumerator GameOver()
     {
         GameManager.Instance.isBattleStarted = false;
+        GameManager.Instance.PlayBgm("Battle_Defeat");
         StartCoroutine(FadeOut(ingamePanel, 1f));
         StartCoroutine(FadeIn(backgroundPanel, 1f));
 
@@ -58,6 +65,7 @@ public class MainSceneController : UIController
 
     public void StartGameButton()
     {
+        
         StartCoroutine(StartGame());
     }
 
@@ -77,6 +85,7 @@ public class MainSceneController : UIController
 
     public void SurrenderGameButton()
     {
+        GameManager.Instance.PlayBgm("Menu_Main");
         StartCoroutine(SurrenderGame());
     }
 
@@ -95,6 +104,7 @@ public class MainSceneController : UIController
 
     public void RespawnCheckpointButton()
     {
+        
         StartCoroutine(RespawnCheckpoint());
     }
 
@@ -110,7 +120,6 @@ public class MainSceneController : UIController
         GameManager.Instance.RespawnCheckpoint();
         GameManager.Instance.isBattleStarted = true;
         StartCoroutine(GameManager.Instance._enemySpawnManager.SpawnEnemy());
-
     }
 
     public void CalculateResult()
