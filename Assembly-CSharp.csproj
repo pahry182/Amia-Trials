@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\MainSceneController.cs" />
     <Compile Include="Assets\Scripts\PlayerSkill.cs" />
+    <Compile Include="Assets\Scripts\PlayerSpell.cs" />
     <Compile Include="Assets\Scripts\TimeLife.cs" />
     <Compile Include="Assets\Scripts\UIController.cs" />
     <Compile Include="Assets\Scripts\UnitAI.cs" />
