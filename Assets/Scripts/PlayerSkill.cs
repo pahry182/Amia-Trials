@@ -11,6 +11,8 @@ public class PlayerSkill : MonoBehaviour
     [Header("Hunter's Instinct")]
     public GameObject specialEffect;
     public Image hunter_image;
+    public Image manastrike_image;
+    public Image mystic_image;
     public float additionalBeastKiller = 0.4f;
     public float hunter_manaCost = 36;
     public float hunter_duration = 26;
@@ -44,12 +46,12 @@ public class PlayerSkill : MonoBehaviour
         if (manastrike_currentCd > 0)
         {
             manastrike_currentCd -= Time.deltaTime;
-            
+            manastrike_image.fillAmount -= Time.deltaTime * 1 / hunter_cd;
         }
         if (mystic_currentCd > 0)
         {
             mystic_currentCd -= Time.deltaTime;
-
+            mystic_image.fillAmount -= Time.deltaTime * 1 / hunter_cd;
         }
     }
 
@@ -65,6 +67,7 @@ public class PlayerSkill : MonoBehaviour
     public void ManastrikeButton()
     {
         if (manastrike_currentCd > 0 || _ub.currentMp < manastrike_manaCost) return;
+        manastrike_image.fillAmount = 1f;
         _ub.currentMp -= manastrike_manaCost;
         _ub.Cast();
         StartCoroutine(Manastrike());
@@ -73,6 +76,7 @@ public class PlayerSkill : MonoBehaviour
     public void MysticFieldButton()
     {
         if (mystic_currentCd > 0 || _ub.currentMp < mystic_manaCost) return;
+        mystic_image.fillAmount = 1f;
         _ub.currentMp -= mystic_manaCost;
         _ub.Cast();
         StartCoroutine(MysticField());
