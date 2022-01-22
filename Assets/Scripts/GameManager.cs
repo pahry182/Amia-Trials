@@ -231,6 +231,22 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void ToggleMusic(bool value)
+    {
+        for (int i = 0; i < audio.backgroundMusics.Length; i++)
+        {
+            audio.backgroundMusics[i].audioSource.mute = value;
+        }
+    }
+
+    public void ToggleEffects(bool value)
+    {
+        for (int i = 0; i < audio.soundEffects.Length; i++)
+        {
+            audio.soundEffects[i].audioSource.mute = value;
+        }
+    }
+
     [Serializable]
     public class Audio
     {

@@ -127,6 +127,7 @@
     <Compile Include="Assets\DragonBones\Scripts\unity\UnitySlot.cs" />
     <Compile Include="Assets\DragonBones\Scripts\unity\UnityTextureAtlasData.cs" />
     <Compile Include="Assets\DragonBones\Scripts\unity\UnityUGUIDisplay.cs" />
+    <Compile Include="Assets\Scripts\AudioController.cs" />
     <Compile Include="Assets\Scripts\EnemySpawnManager.cs" />
     <Compile Include="Assets\Scripts\EnemyStatRandomizer.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
