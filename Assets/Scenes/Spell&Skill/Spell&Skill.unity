@@ -3398,6 +3398,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f494989a36fa2d4eb09813d1faf969b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _UnitAI: {fileID: 0}
   _sr: {fileID: 0}
   _levelText: {fileID: 0}
   unitName: Amia
@@ -3511,13 +3512,92 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba4a25733dda51e42b121b3bff19edd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spellList:
+  - spellName: Fire Burst
+    cdFillImage: {fileID: 0}
+    spellElement: 1
+    cooldown: 3
+    manaCost: 14
+    baseDamage: 22
+    manaIncrement: 1.5
+    damageIncrement: 2
+    currentCd: 0
+  - spellName: Water Jet-Shot
+    cdFillImage: {fileID: 0}
+    spellElement: 2
+    cooldown: 21
+    manaCost: 66
+    baseDamage: 57
+    manaIncrement: 4
+    damageIncrement: 3.5
+    currentCd: 0
+  - spellName: Lightning Bolt
+    cdFillImage: {fileID: 0}
+    spellElement: 3
+    cooldown: 2
+    manaCost: 9
+    baseDamage: 11
+    manaIncrement: 2
+    damageIncrement: 2
+    currentCd: 0
+  - spellName: Stone Solidify
+    cdFillImage: {fileID: 0}
+    spellElement: 4
+    cooldown: 18
+    manaCost: 52
+    baseDamage: 44
+    manaIncrement: 4
+    damageIncrement: 5
+    currentCd: 0
+  - spellName: Wind Slash
+    cdFillImage: {fileID: 0}
+    spellElement: 5
+    cooldown: 2
+    manaCost: 9
+    baseDamage: 14
+    manaIncrement: 4
+    damageIncrement: 3
+    currentCd: 0
+  - spellName: Frost Nova
+    cdFillImage: {fileID: 0}
+    spellElement: 6
+    cooldown: 12
+    manaCost: 38
+    baseDamage: 30
+    manaIncrement: 4
+    damageIncrement: 5
+    currentCd: 0
+  - spellName: Illuminate
+    cdFillImage: {fileID: 0}
+    spellElement: 7
+    cooldown: 4
+    manaCost: 9
+    baseDamage: 11
+    manaIncrement: 2
+    damageIncrement: 2
+    currentCd: 0
+  - spellName: Unholy Judgement
+    cdFillImage: {fileID: 0}
+    spellElement: 8
+    cooldown: 24
+    manaCost: 72
+    baseDamage: 67
+    manaIncrement: 4
+    damageIncrement: 4
+    currentCd: 0
   specialEffect: {fileID: 1290921594140036537, guid: 6f87df3a432d5b041b0f621154406d50,
     type: 3}
-  fireBrust_image: {fileID: 0}
-  fireResistanceDown: 0.16
-  fireBrust_manaCost: 0
-  fireBrust_cd: 3
-  fireBrust_currentCd: 0
+  fireBurst_fireResDown: 0.16
+  jet_critChance: 25
+  jet_critDamage: 2.25
+  bolt_stunChance: 10
+  bolt_stunDuration: 1.5
+  windSlash_resDown: 0.08
+  nova_freezeChance: 25
+  nova_freezeDuration: 5
+  illuminate_defDown: 7
+  illuminate_defDownIncrement: 0.8
+  judge_hpPercentage: 0.3
 --- !u!114 &1123119293
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3530,6 +3610,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d170dd9ad9148a54089840de63147e47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetPosition: {fileID: 0}
   target: {fileID: 0}
   targetLayer:
     serializedVersion: 2
