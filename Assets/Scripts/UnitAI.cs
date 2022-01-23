@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Transform = UnityEngine.Transform;
 
 public class UnitAI : MonoBehaviour
 {
@@ -19,6 +20,9 @@ public class UnitAI : MonoBehaviour
     [Header("Gizmo Parameter")]
     public Color gizmoColor = Color.green;
     public bool gizmoShow = true;
+
+    [Header("Direction")]
+    [HideInInspector] public float unitDir;
 
     public bool opponentDetected { get; internal set; }
 
@@ -38,7 +42,11 @@ public class UnitAI : MonoBehaviour
         {
             AttackRangeDetection();
         }
-        
+
+        if(targetPosition != null)
+        {
+            unitDir = transform.position.x - targetPosition.position.x;
+        }
     }
 
     private void FixedUpdate()

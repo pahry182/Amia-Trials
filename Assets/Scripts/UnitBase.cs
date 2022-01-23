@@ -97,6 +97,7 @@ public class UnitBase : MonoBehaviour
     public float attCooldown;
     public float stunDuration;
     public float frozenDuration;
+    [HideInInspector] public bool isAttack = false;
 
     //def/att /2 *10 = total taken damage
     
