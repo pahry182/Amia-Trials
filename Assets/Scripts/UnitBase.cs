@@ -35,7 +35,7 @@ public enum UnitAnimState
 public class UnitBase : MonoBehaviour
 {
     private Rigidbody2D _rb;
-    private UnitAI _UnitAI;
+    [HideInInspector] public UnitAI _UnitAI;
     [HideInInspector] public SpriteRenderer _sr;
     [HideInInspector] public TextMeshPro _levelText;
 
@@ -152,12 +152,21 @@ public class UnitBase : MonoBehaviour
         _rb.AddForce(transform.up * 4, ForceMode2D.Impulse);
     }
 
-    public void DealDamage(float amount)
+    public void DealDamage(float amount, bool isSpellDamage = false, UnitElement _spellElementType = UnitElement.Neutral)
     {
         UnitBase target = _UnitAI.target;
-        float targetDamageReduction = (0.06f * target.def) / (1 + 0.06f * target.def);
-        amount = CalculateKillers(amount, target);
-        amount -= Mathf.Round(amount * targetDamageReduction);
+        if (isSpellDamage)
+        {
+            amount = CalculateElementalRelation(amount, _spellElementType, target);
+            amount -= Mathf.Round(amount * target.spellRes);
+        }
+        else
+        {
+            float targetDamageReduction = (0.06f * target.def) / (1 + 0.06f * target.def);
+            amount = CalculateKillers(amount, target);
+            amount -= Mathf.Round(amount * targetDamageReduction);
+        }
+        
         if (target.currentHp - amount < 1)
         {
             DeclareDeath(target);
@@ -166,7 +175,9 @@ public class UnitBase : MonoBehaviour
         {
             target.currentHp -= amount;
         }
+
         if (isManastriking) isManastriking = false;
+
         print(gameObject.tag + " " + amount);
         GameManager.Instance.StatisticTrackDamageDealt(amount, gameObject);
     }
@@ -176,6 +187,7 @@ public class UnitBase : MonoBehaviour
         switch (_target.unitType)
         {
             case UnitType.Human:
+                _amount += _amount * humanKiller;
                 break;
             case UnitType.Beast:
                 _amount += _amount * beastKiller;
@@ -186,6 +198,38 @@ public class UnitBase : MonoBehaviour
             case UnitType.COUNT:
                 break;
             default:
+                break;
+        }
+        return _amount;
+    }
+
+    private float CalculateElementalRelation(float _amount, UnitElement _spellElementType, UnitBase _target)
+    {
+        switch (_spellElementType)
+        {
+            case UnitElement.Fire:
+                _amount += _amount * (fireAtt - _target.fireRes);
+                break;
+            case UnitElement.Water:
+                _amount += _amount * (waterAtt - _target.waterRes);
+                break;
+            case UnitElement.Lightning:
+                _amount += _amount * (lightningAtt - _target.lightningRes);
+                break;
+            case UnitElement.Earth:
+                _amount += _amount * (earthAtt - _target.earthRes);
+                break;
+            case UnitElement.Wind:
+                _amount += _amount * (windAtt - _target.windRes);
+                break;
+            case UnitElement.Ice:
+                _amount += _amount * (iceAtt - _target.iceRes);
+                break;
+            case UnitElement.Light:
+                _amount += _amount * (lightAtt - _target.lightRes);
+                break;
+            case UnitElement.Dark:
+                _amount += _amount * (darkAtt - _target.darkRes);
                 break;
         }
         return _amount;

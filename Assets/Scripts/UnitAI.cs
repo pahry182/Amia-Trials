@@ -6,7 +6,7 @@ using UnityEngine.Events;
 public class UnitAI : MonoBehaviour
 {
     private UnitBase _thisUnit;
-    private Transform targetPosition;
+    [HideInInspector] public Transform targetPosition;
     private bool isTargetInAttackRange;
 
     public UnitBase target;
