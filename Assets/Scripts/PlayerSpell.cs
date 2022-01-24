@@ -16,23 +16,18 @@ public class PlayerSpell : MonoBehaviour
         public float manaCost;
         public float baseDamage;
         public float manaIncrement;
-        public float damageIncrement;        
+        public float damageIncrement;
 
-        public float currentCd;
-
-        public void UpdateCooldown()
+        public void UpdateCooldown(float _sharedCurrentCd, float _sharedCd)
         {
-            if (currentCd > 0)
-            {
-                currentCd -= Time.deltaTime;
-                cdFillImage.fillAmount -= Time.deltaTime * 1 / cooldown;
-            }
+            if (cdFillImage == null) return;
+            cdFillImage.fillAmount -= Time.deltaTime * 1 / _sharedCd;
         }
 
-        public void StartSpellCooldown()
+        public float StartSpellCooldown()
         {
-            currentCd = cooldown;
             cdFillImage.fillAmount = 1f;
+            return cooldown;
         }
 
         public void UpdateIncrement(int _level)
@@ -43,6 +38,9 @@ public class PlayerSpell : MonoBehaviour
     }
     private UnitBase _ub;
     private int lastLevel;
+    public float sharedCd = 0;
+    public float sharedCurrentCd = 0;
+
     public Spell[] spellList;
     public GameObject specialEffect;
 
@@ -102,22 +100,26 @@ public class PlayerSpell : MonoBehaviour
 
     private void UpdateCooldown()
     {
-        for (int i = 0; i < spellList.Length; i++)
+        if (sharedCurrentCd > 0)
         {
-            spellList[i].UpdateCooldown();
-        }
+            sharedCurrentCd -= Time.deltaTime;
+            for (int i = 0; i < spellList.Length; i++)
+            {
+                spellList[i].UpdateCooldown(sharedCurrentCd, sharedCd);
+            }
+        }        
     }
 
     private IEnumerator FireBurst()
     {
         Spell fireBurst = spellList[0];
-        if (_ub.currentMp >= fireBurst.manaCost)
+        if (_ub.currentMp <= fireBurst.manaCost)
         {
             print(fireBurst.spellName + " No Mana");
         }
-        else if (fireBurst.currentCd > 0)
+        else if (sharedCurrentCd > 0)
         {
-            print(fireBurst.spellName + " Cooldown");
+            print("Spell Under Cooldown");
         }
         else
         {
@@ -127,8 +129,14 @@ public class PlayerSpell : MonoBehaviour
             _ub.Cast();
             _ub.currentMp -= fireBurst.manaCost;
             _ub.DealDamage(fireBurst.baseDamage, true, fireBurst.spellElement);
-            fireBurst.StartSpellCooldown();
+            _ub._UnitAI.target.fireRes -= fireBurst_fireResDown;
+            sharedCd = fireBurst.StartSpellCooldown();
+            sharedCurrentCd = sharedCd;
         }
-        
+    }
+
+    public void FireBurstButton()
+    {
+        StartCoroutine(FireBurst());
     }
 }
