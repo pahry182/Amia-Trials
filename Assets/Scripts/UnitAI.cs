@@ -73,7 +73,11 @@ public class UnitAI : MonoBehaviour
 
     void MoveToTarget()
     {
-        if (targetPosition && !isTargetInAttackRange && !target.isUnitDead && !_thisUnit.isUnitDead)
+        if (targetPosition && 
+            !isTargetInAttackRange && 
+            !target.isUnitDead && 
+            !_thisUnit.isUnitDead &&
+            _thisUnit.unitState == UnitAnimState.idle)
         {
             transform.position = Vector2.MoveTowards(transform.position, targetPosition.position, _thisUnit.movSpeed * Time.deltaTime);
         }        
@@ -83,7 +87,7 @@ public class UnitAI : MonoBehaviour
     {
         var collider = Physics2D.OverlapCircle(transform.position, attRange, targetLayer);
         opponentDetected = collider != null;
-        if (opponentDetected && !target.isUnitDead && !_thisUnit.isUnitDead)
+        if (opponentDetected && !target.isUnitDead && !_thisUnit.isUnitDead && _thisUnit.unitState == UnitAnimState.idle)
         {
             onOpponentDetected?.Invoke(collider.gameObject);
             _thisUnit.unitState = UnitAnimState.attacking;

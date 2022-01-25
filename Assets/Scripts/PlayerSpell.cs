@@ -212,4 +212,24 @@ public class PlayerSpell : MonoBehaviour
             GameManager.Instance.PlaySfx(currentSpell.spellName);
         }
     }
+
+    public void LightningBoltButton()
+    {
+        if (CheckSpellCondition("Lightning Bolt"))
+        {
+            Destroy(Instantiate(specialEffect, _ub._UnitAI.targetPosition.position, Quaternion.identity), 2f);
+            int select = Random.Range(0, 100);
+            if (select < bolt_stunChance)
+            {
+                _ub._UnitAI.target.stunDuration += bolt_stunDuration;
+                print(currentSpell.spellName + " Stun");
+            }
+            _ub.Cast();
+            _ub.currentMp -= currentSpell.manaCost;
+            _ub.DealDamage(currentSpell.damage, true, currentSpell.spellElement);
+            sharedCd = StartCooldown();
+            sharedCurrentCd = sharedCd;
+            GameManager.Instance.PlaySfx(currentSpell.spellName);
+        }
+    }
 }

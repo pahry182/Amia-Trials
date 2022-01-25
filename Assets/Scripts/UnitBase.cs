@@ -29,7 +29,9 @@ public enum UnitAnimState
     idle,
     moving,
     attacking,
-    special
+    special,
+    stunned,
+    frozen
 }
 
 public class UnitBase : MonoBehaviour
@@ -116,7 +118,17 @@ public class UnitBase : MonoBehaviour
         {
             attCooldown -= Time.deltaTime;
         }
-        if (attCooldown <= 0 && unitState != UnitAnimState.special)
+        if (stunDuration > 0)
+        {
+            stunDuration -= Time.deltaTime;
+            unitState = UnitAnimState.stunned;
+        }
+        else if (frozenDuration > 0)
+        {
+            frozenDuration -= Time.deltaTime;
+            unitState = UnitAnimState.frozen;
+        }
+        else if (attCooldown <= 0 && unitState != UnitAnimState.special)
         {
             unitState = UnitAnimState.idle;
         }
