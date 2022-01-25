@@ -73,6 +73,9 @@ public class PlayerSpell : MonoBehaviour
     public float bolt_stunChance = 10;
     public float bolt_stunDuration = 1.5f;
 
+    [Header("Stone Solidify")]
+    public float solidify_petrifyChance = 8;
+
     [Header("Wind Slash")]
     public float windSlash_resDown = 0.08f;
 
@@ -223,6 +226,26 @@ public class PlayerSpell : MonoBehaviour
             {
                 _ub._UnitAI.target.stunDuration += bolt_stunDuration;
                 print(currentSpell.spellName + " Stun");
+            }
+            _ub.Cast();
+            _ub.currentMp -= currentSpell.manaCost;
+            _ub.DealDamage(currentSpell.damage, true, currentSpell.spellElement);
+            sharedCd = StartCooldown();
+            sharedCurrentCd = sharedCd;
+            GameManager.Instance.PlaySfx(currentSpell.spellName);
+        }
+    }
+
+    public void StoneSolidifyButton()
+    {
+        if (CheckSpellCondition("Stone Solidify"))
+        {
+            Destroy(Instantiate(specialEffect, _ub._UnitAI.targetPosition.position, Quaternion.identity), 2f);
+            int select = Random.Range(0, 100);
+            if (select < solidify_petrifyChance)
+            {
+                _ub._UnitAI.target.currentHp = 0f;
+                print(currentSpell.spellName + " Petrified");
             }
             _ub.Cast();
             _ub.currentMp -= currentSpell.manaCost;
