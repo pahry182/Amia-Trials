@@ -48,6 +48,7 @@ public class UnitBase : MonoBehaviour
     public float maxHp = 100f;
     public float maxMp = 100f;
     public float maxXp = 100f;
+    public float manaRegen = 0;
     public float att = 10f;
     public float critChance = 10;
     public float critMultiplier = 0.5f;
@@ -121,6 +122,10 @@ public class UnitBase : MonoBehaviour
         }
         
         _levelText.text = "Lv. " + unitLevel;
+        if (currentMp < maxMp && manaRegen != 0 && !isUnitDead)
+        {
+            currentMp += Time.deltaTime * manaRegen;
+        }
     }
 
     public void Attack()

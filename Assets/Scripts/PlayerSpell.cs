@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class PlayerSpell : MonoBehaviour
 {
@@ -11,11 +12,14 @@ public class PlayerSpell : MonoBehaviour
     {
         public string spellName;
         public Image cdFillImage;
+        public Image manaFillImage;
         public UnitElement spellElement;
         public float cooldown;
         public float manaCost;
-        public float baseDamage;
+        public float baseManaCost;
         public float manaIncrement;
+        public float damage;
+        public float baseDamage;
         public float damageIncrement;
 
         public void UpdateCooldown(float _sharedCurrentCd, float _sharedCd)
@@ -24,22 +28,36 @@ public class PlayerSpell : MonoBehaviour
             cdFillImage.fillAmount -= Time.deltaTime * 1 / _sharedCd;
         }
 
-        public float StartSpellCooldown()
+        public void StartCdFill()
         {
+            if (cdFillImage == null) return;
             cdFillImage.fillAmount = 1f;
-            return cooldown;
         }
 
         public void UpdateIncrement(int _level)
         {
-            manaCost += manaIncrement * _level;
-            baseDamage += damageIncrement * _level;
+            manaCost = baseManaCost + manaIncrement * _level;
+            damage = baseDamage + damageIncrement * _level;
+        }
+
+        public void UpdateManaCost(float _currentMp)
+        {
+            if (cdFillImage == null) return;
+            if (_currentMp < manaCost)
+            {
+                manaFillImage.color = new Color32(115, 128, 212, 255);
+            }
+            else
+            {
+                manaFillImage.color = new Color32(255, 255, 255, 255);
+            }
         }
     }
     private UnitBase _ub;
     private int lastLevel;
     public float sharedCd = 0;
     public float sharedCurrentCd = 0;
+    public Spell currentSpell = null;
 
     public Spell[] spellList;
     public GameObject specialEffect;
@@ -79,6 +97,7 @@ public class PlayerSpell : MonoBehaviour
     {
         UpdateCooldown();
         UpdateSpells();
+        UpdateManaCosts();
     }
 
     private void UpdateSpells()
@@ -107,36 +126,90 @@ public class PlayerSpell : MonoBehaviour
             {
                 spellList[i].UpdateCooldown(sharedCurrentCd, sharedCd);
             }
-        }        
+        }
     }
 
-    private IEnumerator FireBurst()
+    private void UpdateManaCosts()
     {
-        Spell fireBurst = spellList[0];
-        if (_ub.currentMp <= fireBurst.manaCost)
+        for (int i = 0; i < spellList.Length; i++)
         {
-            print(fireBurst.spellName + " No Mana");
+            spellList[i].UpdateManaCost(_ub.currentMp);
+        }
+    }
+
+    private float StartCooldown()
+    {
+        for (int i = 0; i < spellList.Length; i++)
+        {
+            spellList[i].StartCdFill();
+        }
+        return currentSpell.cooldown;
+    }
+
+    private bool CheckSpellCondition(string name)
+    {
+        for (int i = 0; i < spellList.Length; i++)
+        {
+            if (name == spellList[i].spellName)
+            {
+                currentSpell = spellList[i];
+                break;
+            }
+        }
+        
+        if (_ub.currentMp <= currentSpell.manaCost)
+        {
+            print(currentSpell.spellName + " No Mana");
         }
         else if (sharedCurrentCd > 0)
         {
             print("Spell Under Cooldown");
         }
+        else if (_ub._UnitAI.target == null)
+        {
+            print("No Target");
+        }
         else
         {
-            yield return new WaitForSeconds(0);
-            GameObject _temp = Instantiate(specialEffect, _ub._UnitAI.targetPosition.position, Quaternion.identity);
-            _temp.GetComponent<TimeLife>().life = 2f;
-            _ub.Cast();
-            _ub.currentMp -= fireBurst.manaCost;
-            _ub.DealDamage(fireBurst.baseDamage, true, fireBurst.spellElement);
-            _ub._UnitAI.target.fireRes -= fireBurst_fireResDown;
-            sharedCd = fireBurst.StartSpellCooldown();
-            sharedCurrentCd = sharedCd;
+            return true;
         }
+        return false;
     }
 
     public void FireBurstButton()
     {
-        StartCoroutine(FireBurst());
+        if (CheckSpellCondition("Fire Burst"))
+        {
+            GameObject _temp = Instantiate(specialEffect, _ub._UnitAI.targetPosition.position, Quaternion.identity);
+            _temp.GetComponent<TimeLife>().life = 2f;
+            _ub.Cast();
+            _ub.currentMp -= currentSpell.manaCost;
+            _ub.DealDamage(currentSpell.damage, true, currentSpell.spellElement);
+            _ub._UnitAI.target.fireRes -= fireBurst_fireResDown;
+            sharedCd = StartCooldown();
+            sharedCurrentCd = sharedCd;
+            GameManager.Instance.PlaySfx(currentSpell.spellName);
+        }
+    }
+
+    public void WaterJetShotButton()
+    {
+        if (CheckSpellCondition("Water Jet-Shot"))
+        {
+            Destroy(Instantiate(specialEffect, _ub._UnitAI.targetPosition.position, Quaternion.identity), 2f);
+            float amount = currentSpell.damage;
+            int select = Random.Range(0, 100);
+            if (select < jet_critChance)
+            {
+                amount *= jet_critDamage;
+                print(currentSpell.spellName + " Critical");
+            }
+            _ub.Cast();
+            _ub.currentMp -= currentSpell.manaCost;
+            _ub.DealDamage(amount, true, currentSpell.spellElement);
+            sharedCd = StartCooldown();
+            sharedCurrentCd = sharedCd;
+            GameManager.Instance.PlaySfx(currentSpell.spellName);
+        }
     }
 }
