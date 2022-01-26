@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -85,6 +83,7 @@ public class PlayerSpell : MonoBehaviour
 
     [Header("Iluminate")]
     public float illuminate_defDown = 7;
+    public float illuminate_baseDefDown = 7;
     public float illuminate_defDownIncrement = 0.8f;
 
     [Header("Unholy Judgement")]
@@ -98,12 +97,12 @@ public class PlayerSpell : MonoBehaviour
 
     private void Update()
     {
-        UpdateCooldown();
-        UpdateSpells();
-        UpdateManaCosts();
+        UpdateBatchCooldown();
+        UpdateBatchSpellIncrement();
+        UpdateBatchManaCost();
     }
 
-    private void UpdateSpells()
+    private void UpdateBatchSpellIncrement()
     {
         int level = _ub.unitLevel;
         if(lastLevel == level)
@@ -115,12 +114,13 @@ public class PlayerSpell : MonoBehaviour
             lastLevel = _ub.unitLevel;
             for (int i = 0; i < spellList.Length; i++)
             {
-                spellList[i].UpdateIncrement(_ub.unitLevel);
+                spellList[i].UpdateIncrement(level);
             }
+            illuminate_defDown = illuminate_baseDefDown + illuminate_defDownIncrement * level;
         }
     }
 
-    private void UpdateCooldown()
+    private void UpdateBatchCooldown()
     {
         if (sharedCurrentCd > 0)
         {
@@ -132,7 +132,7 @@ public class PlayerSpell : MonoBehaviour
         }
     }
 
-    private void UpdateManaCosts()
+    private void UpdateBatchManaCost()
     {
         for (int i = 0; i < spellList.Length; i++)
         {
@@ -179,7 +179,7 @@ public class PlayerSpell : MonoBehaviour
         return false;
     }
 
-    private void InitiateSpell(float _spellDamageAmount)
+    private void DeliverSpellDamage(float _spellDamageAmount)
     {
         Destroy(Instantiate(specialEffect, _ub._UnitAI.targetPosition.position, Quaternion.identity), 2f);
         _ub.Cast();
@@ -194,7 +194,7 @@ public class PlayerSpell : MonoBehaviour
     {
         if (CheckSpellCondition("Fire Burst"))
         {
-            InitiateSpell(currentSpell.damage);
+            DeliverSpellDamage(currentSpell.damage);
             _ub._UnitAI.target.fireRes -= fireBurst_fireResDown;
         }
     }
@@ -210,7 +210,7 @@ public class PlayerSpell : MonoBehaviour
                 amount *= jet_critDamage;
                 print(currentSpell.spellName + " Critical");
             }
-            InitiateSpell(amount);
+            DeliverSpellDamage(amount);
         }
     }
 
@@ -218,13 +218,13 @@ public class PlayerSpell : MonoBehaviour
     {
         if (CheckSpellCondition("Lightning Bolt"))
         {
+            DeliverSpellDamage(currentSpell.damage);
             int select = Random.Range(0, 100);
             if (select < bolt_stunChance)
             {
                 _ub._UnitAI.target.stunDuration += bolt_stunDuration;
                 print(currentSpell.spellName + " Stun");
             }
-            InitiateSpell(currentSpell.damage);
         }
     }
 
@@ -232,15 +232,12 @@ public class PlayerSpell : MonoBehaviour
     {
         if (CheckSpellCondition("Stone Solidify"))
         {
+            DeliverSpellDamage(currentSpell.damage);
             int select = Random.Range(0, 100);
             if (select < solidify_petrifyChance)
             {
                 _ub._UnitAI.target.currentHp = 0f;
                 print(currentSpell.spellName + " Petrified");
-            }
-            else
-            {
-                InitiateSpell(currentSpell.damage);
             }
         }
     }
@@ -249,8 +246,41 @@ public class PlayerSpell : MonoBehaviour
     {
         if (CheckSpellCondition("Wind Slash"))
         {
-            InitiateSpell(currentSpell.damage);
+            DeliverSpellDamage(currentSpell.damage);
             _ub._UnitAI.target.spellRes -= windSlash_resDown;
+        }
+    }
+
+    public void FrostNovaButton()
+    {
+        if (CheckSpellCondition("Frost Nova"))
+        {
+            DeliverSpellDamage(currentSpell.damage);
+            int select = Random.Range(0, 100);
+            if (select < nova_freezeChance)
+            {
+                _ub._UnitAI.target.frozenDuration += nova_freezeDuration;
+                print(currentSpell.spellName + " Frozen");
+            }
+        }
+    }
+
+    public void IlluminateButton()
+    {
+        if (CheckSpellCondition("Illuminate"))
+        {
+            DeliverSpellDamage(currentSpell.damage);
+            _ub._UnitAI.target.def -= illuminate_defDown;
+        }
+    }
+
+    public void UnholyJudgementButton()
+    {
+        if (CheckSpellCondition("Unholy Judgement"))
+        {
+            float amount = currentSpell.damage;
+            amount += _ub._UnitAI.target.currentHp * judge_hpPercentage;
+            DeliverSpellDamage(amount);
         }
     }
 }
