@@ -179,19 +179,23 @@ public class PlayerSpell : MonoBehaviour
         return false;
     }
 
+    private void InitiateSpell(float _spellDamageAmount)
+    {
+        Destroy(Instantiate(specialEffect, _ub._UnitAI.targetPosition.position, Quaternion.identity), 2f);
+        _ub.Cast();
+        _ub.currentMp -= currentSpell.manaCost;
+        _ub.DealDamage(_spellDamageAmount, true, currentSpell.spellElement);
+        sharedCd = StartCooldown();
+        sharedCurrentCd = sharedCd;
+        GameManager.Instance.PlaySfx(currentSpell.spellName);
+    }
+
     public void FireBurstButton()
     {
         if (CheckSpellCondition("Fire Burst"))
         {
-            GameObject _temp = Instantiate(specialEffect, _ub._UnitAI.targetPosition.position, Quaternion.identity);
-            _temp.GetComponent<TimeLife>().life = 2f;
-            _ub.Cast();
-            _ub.currentMp -= currentSpell.manaCost;
-            _ub.DealDamage(currentSpell.damage, true, currentSpell.spellElement);
+            InitiateSpell(currentSpell.damage);
             _ub._UnitAI.target.fireRes -= fireBurst_fireResDown;
-            sharedCd = StartCooldown();
-            sharedCurrentCd = sharedCd;
-            GameManager.Instance.PlaySfx(currentSpell.spellName);
         }
     }
 
@@ -199,7 +203,6 @@ public class PlayerSpell : MonoBehaviour
     {
         if (CheckSpellCondition("Water Jet-Shot"))
         {
-            Destroy(Instantiate(specialEffect, _ub._UnitAI.targetPosition.position, Quaternion.identity), 2f);
             float amount = currentSpell.damage;
             int select = Random.Range(0, 100);
             if (select < jet_critChance)
@@ -207,12 +210,7 @@ public class PlayerSpell : MonoBehaviour
                 amount *= jet_critDamage;
                 print(currentSpell.spellName + " Critical");
             }
-            _ub.Cast();
-            _ub.currentMp -= currentSpell.manaCost;
-            _ub.DealDamage(amount, true, currentSpell.spellElement);
-            sharedCd = StartCooldown();
-            sharedCurrentCd = sharedCd;
-            GameManager.Instance.PlaySfx(currentSpell.spellName);
+            InitiateSpell(amount);
         }
     }
 
@@ -220,19 +218,13 @@ public class PlayerSpell : MonoBehaviour
     {
         if (CheckSpellCondition("Lightning Bolt"))
         {
-            Destroy(Instantiate(specialEffect, _ub._UnitAI.targetPosition.position, Quaternion.identity), 2f);
             int select = Random.Range(0, 100);
             if (select < bolt_stunChance)
             {
                 _ub._UnitAI.target.stunDuration += bolt_stunDuration;
                 print(currentSpell.spellName + " Stun");
             }
-            _ub.Cast();
-            _ub.currentMp -= currentSpell.manaCost;
-            _ub.DealDamage(currentSpell.damage, true, currentSpell.spellElement);
-            sharedCd = StartCooldown();
-            sharedCurrentCd = sharedCd;
-            GameManager.Instance.PlaySfx(currentSpell.spellName);
+            InitiateSpell(currentSpell.damage);
         }
     }
 
@@ -240,19 +232,25 @@ public class PlayerSpell : MonoBehaviour
     {
         if (CheckSpellCondition("Stone Solidify"))
         {
-            Destroy(Instantiate(specialEffect, _ub._UnitAI.targetPosition.position, Quaternion.identity), 2f);
             int select = Random.Range(0, 100);
             if (select < solidify_petrifyChance)
             {
                 _ub._UnitAI.target.currentHp = 0f;
                 print(currentSpell.spellName + " Petrified");
             }
-            _ub.Cast();
-            _ub.currentMp -= currentSpell.manaCost;
-            _ub.DealDamage(currentSpell.damage, true, currentSpell.spellElement);
-            sharedCd = StartCooldown();
-            sharedCurrentCd = sharedCd;
-            GameManager.Instance.PlaySfx(currentSpell.spellName);
+            else
+            {
+                InitiateSpell(currentSpell.damage);
+            }
+        }
+    }
+
+    public void WindSlashButton()
+    {
+        if (CheckSpellCondition("Wind Slash"))
+        {
+            InitiateSpell(currentSpell.damage);
+            _ub._UnitAI.target.spellRes -= windSlash_resDown;
         }
     }
 }
