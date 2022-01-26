@@ -29,13 +29,15 @@ public enum UnitAnimState
     idle,
     moving,
     attacking,
-    special
+    special,
+    stunned,
+    frozen
 }
 
 public class UnitBase : MonoBehaviour
 {
     private Rigidbody2D _rb;
-    private UnitAI _UnitAI;
+    [HideInInspector] public UnitAI _UnitAI;
     [HideInInspector] public SpriteRenderer _sr;
     [HideInInspector] public TextMeshPro _levelText;
 
@@ -48,6 +50,7 @@ public class UnitBase : MonoBehaviour
     public float maxHp = 100f;
     public float maxMp = 100f;
     public float maxXp = 100f;
+    public float manaRegen = 0;
     public float att = 10f;
     public float critChance = 10;
     public float critMultiplier = 0.5f;
@@ -116,12 +119,26 @@ public class UnitBase : MonoBehaviour
         {
             attCooldown -= Time.deltaTime;
         }
-        if (attCooldown <= 0 && unitState != UnitAnimState.special)
+        if (stunDuration > 0)
+        {
+            stunDuration -= Time.deltaTime;
+            unitState = UnitAnimState.stunned;
+        }
+        else if (frozenDuration > 0)
+        {
+            frozenDuration -= Time.deltaTime;
+            unitState = UnitAnimState.frozen;
+        }
+        else if (attCooldown <= 0 && unitState != UnitAnimState.special)
         {
             unitState = UnitAnimState.idle;
         }
         
         _levelText.text = "Lv. " + unitLevel;
+        if (currentMp < maxMp && manaRegen != 0 && !isUnitDead)
+        {
+            currentMp += Time.deltaTime * manaRegen;
+        }
     }
 
     public void Attack()
@@ -153,12 +170,21 @@ public class UnitBase : MonoBehaviour
         _rb.AddForce(transform.up * 4, ForceMode2D.Impulse);
     }
 
-    public void DealDamage(float amount)
+    public void DealDamage(float amount, bool isSpellDamage = false, UnitElement _spellElementType = UnitElement.Neutral)
     {
         UnitBase target = _UnitAI.target;
-        float targetDamageReduction = (0.06f * target.def) / (1 + 0.06f * target.def);
-        amount = CalculateKillers(amount, target);
-        amount -= Mathf.Round(amount * targetDamageReduction);
+        if (isSpellDamage)
+        {
+            amount = CalculateElementalRelation(amount, _spellElementType, target);
+            amount -= Mathf.Round(amount * target.spellRes);
+        }
+        else
+        {
+            float targetDamageReduction = (0.06f * target.def) / (1 + 0.06f * target.def);
+            amount = CalculateKillers(amount, target);
+            amount -= Mathf.Round(amount * targetDamageReduction);
+        }
+        
         if (target.currentHp - amount < 1)
         {
             DeclareDeath(target);
@@ -167,7 +193,9 @@ public class UnitBase : MonoBehaviour
         {
             target.currentHp -= amount;
         }
+
         if (isManastriking) isManastriking = false;
+
         print(gameObject.tag + " " + amount);
         GameManager.Instance.StatisticTrackDamageDealt(amount, gameObject);
     }
@@ -177,6 +205,7 @@ public class UnitBase : MonoBehaviour
         switch (_target.unitType)
         {
             case UnitType.Human:
+                _amount += _amount * humanKiller;
                 break;
             case UnitType.Beast:
                 _amount += _amount * beastKiller;
@@ -187,6 +216,38 @@ public class UnitBase : MonoBehaviour
             case UnitType.COUNT:
                 break;
             default:
+                break;
+        }
+        return _amount;
+    }
+
+    private float CalculateElementalRelation(float _amount, UnitElement _spellElementType, UnitBase _target)
+    {
+        switch (_spellElementType)
+        {
+            case UnitElement.Fire:
+                _amount += _amount * (fireAtt - _target.fireRes);
+                break;
+            case UnitElement.Water:
+                _amount += _amount * (waterAtt - _target.waterRes);
+                break;
+            case UnitElement.Lightning:
+                _amount += _amount * (lightningAtt - _target.lightningRes);
+                break;
+            case UnitElement.Earth:
+                _amount += _amount * (earthAtt - _target.earthRes);
+                break;
+            case UnitElement.Wind:
+                _amount += _amount * (windAtt - _target.windRes);
+                break;
+            case UnitElement.Ice:
+                _amount += _amount * (iceAtt - _target.iceRes);
+                break;
+            case UnitElement.Light:
+                _amount += _amount * (lightAtt - _target.lightRes);
+                break;
+            case UnitElement.Dark:
+                _amount += _amount * (darkAtt - _target.darkRes);
                 break;
         }
         return _amount;

@@ -16,6 +16,14 @@ public class MainSceneController : UIController
     public GameObject resultText;
     public Button RespawnButton;
 
+    private void Awake()
+    {
+        backgroundPanel.gameObject.SetActive(true);
+        startMenuPanel.gameObject.SetActive(true);
+        ingamePanel.gameObject.SetActive(false);
+        losePanel.gameObject.SetActive(false);
+    }
+
     private void Update()
     {
         if (GameManager.Instance.currentWave % 4 == 0 && GameManager.Instance.currentWave != 0)
