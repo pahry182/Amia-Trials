@@ -45,9 +45,11 @@ public class UnitBase : MonoBehaviour
     public string unitName = "Amia";
     public int unitLevel = 1;
     public float currentHp = 100f;
+    public float currentShd = 0f;
     public float currentMp = 100f;
     public float currentXp;
     public float maxHp = 100f;
+    public float maxShd = 100f;
     public float maxMp = 100f;
     public float maxXp = 100f;
     public float manaRegen = 0;
@@ -103,7 +105,7 @@ public class UnitBase : MonoBehaviour
     [HideInInspector] public bool isAttack = false;
 
     //def/att /2 *10 = total taken damage
-    
+
 
     private void Awake()
     {
@@ -133,7 +135,7 @@ public class UnitBase : MonoBehaviour
         {
             unitState = UnitAnimState.idle;
         }
-        
+
         _levelText.text = "Lv. " + unitLevel;
         if (currentMp < maxMp && manaRegen != 0 && !isUnitDead)
         {
@@ -184,7 +186,7 @@ public class UnitBase : MonoBehaviour
             amount = CalculateKillers(amount, target);
             amount -= Mathf.Round(amount * targetDamageReduction);
         }
-        
+
         if (target.currentHp - amount < 1)
         {
             DeclareDeath(target);
@@ -261,14 +263,13 @@ public class UnitBase : MonoBehaviour
         if (target.isBoss)
         {
             GainExp((int)((Random.Range(45, 75) * (0.65 * target.unitLevel)) + target.unitLevel) * 2);
-        } 
+        }
         else
         {
             GainExp((int)((Random.Range(25, 55) * (0.6 * target.unitLevel)) + target.unitLevel) * 2);
         }
         GameManager.Instance.StatisticTrackKill(target, gameObject);
         GameManager.Instance.CheckDeath(target.gameObject);
-
     }
 
     public void GainExp(int amount)

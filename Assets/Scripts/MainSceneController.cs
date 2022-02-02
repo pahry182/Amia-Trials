@@ -26,7 +26,7 @@ public class MainSceneController : UIController
 
     private void Update()
     {
-        if (GameManager.Instance.currentWave % 4 == 0 && GameManager.Instance.currentWave != 0)
+        if (GameManager.Instance.currentWave % GameManager.Instance.bossWave == 0 && GameManager.Instance.currentWave != 0)
         {
             waveText.text = "Wave: " + GameManager.Instance.currentWave + " (Boss)";
         }

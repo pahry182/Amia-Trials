@@ -5,9 +5,18 @@ using DragonBones;
 
 public class TestDragonbones : MonoBehaviour
 {
-    [SerializeField] private UnityArmatureComponent player;
-    [SerializeField] private UnitAI _thisUnitAI;
-    [SerializeField] private UnitBase _thisUnit;
+    private UnityArmatureComponent _player;
+    private UnitAI _thisUnitAI;
+    private UnitBase _thisUnit;
+    public string[] animStrings;
+
+    private void Awake()
+    {
+        _player = GetComponentInChildren<UnityArmatureComponent>();
+        _thisUnitAI = GetComponentInChildren<UnitAI>();
+        _thisUnit = GetComponentInChildren<UnitBase>();
+    }
+
     void Start()
     {
         
@@ -17,16 +26,28 @@ public class TestDragonbones : MonoBehaviour
     {
         if(_thisUnitAI.unitDir < 0)
         {
-            player._armature.flipX = true;
+            _player._armature.flipX = true;
         }
         if (_thisUnitAI.unitDir > 0)
         {
-            player._armature.flipX = false;
+            _player._armature.flipX = false;
         }
 
         if(_thisUnit.unitState == UnitAnimState.attacking)
         {
-            player.animation.Play("amia_attack_1");
+            ChangeAnim(animStrings[0]);
+        }
+    }
+
+    private void ChangeAnim(string animName)
+    {
+        if (_player.animation.lastAnimationName != animName)
+        {
+            _player.animation.Reset();
+        }
+        if (!_player.animation.isPlaying)
+        {
+            _player.animation.Play(animName, 1);
         }
     }
 }

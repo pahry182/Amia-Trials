@@ -5,31 +5,59 @@ using UnityEngine.UI;
 
 public class PlayerSkill : MonoBehaviour
 {
+    [System.Serializable]
+    public class Skill
+    {
+        public string skillName;
+        public Image cdFillImage;
+        public Image manaFillImage;
+        public float cooldown;
+        public float currentCooldown;
+        public float manaCost;
+        public float baseManaCost;
+        public float manaIncrement;
+        public float buffDuration;
+
+        public void UpdateCdFill()
+        {
+            if (currentCooldown > 0) currentCooldown -= Time.deltaTime;
+            if (cdFillImage == null) return;
+            cdFillImage.fillAmount -= Time.deltaTime * 1 / cooldown;
+        }
+
+        public void StartCdFill()
+        {
+            currentCooldown = cooldown;
+            if (cdFillImage == null) return;
+            cdFillImage.fillAmount = 1f;
+        }
+
+        public void UpdateIncrement(int _level)
+        {
+            manaCost = baseManaCost + manaIncrement * _level;
+        }
+
+        public void UpdateManaCost(float _currentMp)
+        {
+            if (manaFillImage == null) return;
+            if (_currentMp < manaCost)
+            {
+                manaFillImage.color = new Color32(115, 128, 212, 255);
+            }
+            else
+            {
+                manaFillImage.color = new Color32(255, 255, 255, 255);
+            }
+        }
+    }
     private UnitBase _ub;
-    private Animator _an;
+    [SerializeField] private Skill[] playerSkills;
 
     [Header("Hunter's Instinct")]
-    public GameObject specialEffect;
-    public Image hunter_image;
     public float additionalBeastKiller = 0.4f;
-    public float hunter_manaCost = 36;
-    public float hunter_duration = 26;
-    public float hunter_cd = 80;
-    public float hunter_currentCd;
 
     [Header("Manastrike")]
-    public Image manastrike_image;
     public float additionalFiendKiller = 0.75f;
-    public float manastrike_manaCost = 14;
-    public float manastrike_cd = 8;
-    public float manastrike_currentCd;
-
-    [Header("Mystic Field")]
-    public Image mystic_image;
-    public float mystic_manaCost = 42;
-    public float mystic_duration = 10;
-    public float mystic_cd = 30;
-    public float mystic_currentCd;
 
     private void Awake()
     {
@@ -38,82 +66,108 @@ public class PlayerSkill : MonoBehaviour
 
     private void Update()
     {
-        if (hunter_currentCd > 0)
+        foreach (var item in playerSkills)
         {
-            hunter_currentCd -= Time.deltaTime;
-            hunter_image.fillAmount -= Time.deltaTime * 1 / hunter_cd;
+            item.UpdateCdFill();
+            item.UpdateManaCost(_ub.currentMp);
         }
-        if (manastrike_currentCd > 0)
+    }
+
+    public Skill CheckSkillCondition(string name)
+    {
+        Skill currentSkill = null;
+        for (int i = 0; i < playerSkills.Length; i++)
         {
-            manastrike_currentCd -= Time.deltaTime;
-            manastrike_image.fillAmount -= Time.deltaTime * 1 / manastrike_cd;
+            if (name == playerSkills[i].skillName)
+            {
+                currentSkill = playerSkills[i];
+                break;
+            }
         }
-        if (mystic_currentCd > 0)
+
+        if (_ub.currentMp <= currentSkill.manaCost)
         {
-            mystic_currentCd -= Time.deltaTime;
-            mystic_image.fillAmount -= Time.deltaTime * 1 / mystic_cd;
+            print(currentSkill.skillName + " No Mana");
         }
+        else if (currentSkill.currentCooldown > 0)
+        {
+            print(currentSkill.skillName + " Under Cooldown");
+        }
+        else
+        {
+            _ub.currentMp -= currentSkill.manaCost;
+            _ub.Cast();
+            currentSkill.StartCdFill();
+
+            return currentSkill;
+        }
+
+        return null;
     }
 
     public void HuntersInstinctButton()
     {
-        if (hunter_currentCd > 0 || _ub.currentMp < hunter_manaCost) return;
-        hunter_image.fillAmount = 1f;
-        _ub.currentMp -= hunter_manaCost;
-        _ub.Cast();
-        StartCoroutine(HuntersInstinct());
+        Skill currentSkill = CheckSkillCondition("Hunter's Instinct");
+        if (currentSkill != null)
+        {
+            StartCoroutine(HuntersInstinct(currentSkill));
+        }
     }
 
     public void ManastrikeButton()
     {
-        if (manastrike_currentCd > 0 || _ub.currentMp < manastrike_manaCost) return;
-        manastrike_image.fillAmount = 1f;
-        _ub.currentMp -= manastrike_manaCost;
-        _ub.Cast();
-        StartCoroutine(Manastrike());
+        Skill currentSkill = CheckSkillCondition("Manastrike");
+        if (currentSkill != null)
+        {
+            StartCoroutine(Manastrike());
+        }
     }
 
     public void MysticFieldButton()
     {
-        if (mystic_currentCd > 0 || _ub.currentMp < mystic_manaCost) return;
-        mystic_image.fillAmount = 1f;
-        _ub.currentMp -= mystic_manaCost;
-        _ub.Cast();
-        StartCoroutine(MysticField());
+        Skill currentSkill = CheckSkillCondition("Mystic Field");
+        if (currentSkill != null)
+        {
+            StartCoroutine(MysticField(currentSkill));
+        }
     }
 
-    IEnumerator HuntersInstinct()
+    IEnumerator HuntersInstinct(Skill currentSkill)
     {
-        GameObject _temp = Instantiate(specialEffect, transform.position, Quaternion.identity);
-        _temp.GetComponent<TimeLife>().life = 1f;
+        //GameObject _temp = Instantiate(GameManager.Instance., transform.position, Quaternion.identity);
+        
         _ub.beastKiller += additionalBeastKiller;
-        hunter_currentCd = hunter_cd;
-        yield return new WaitForSeconds(hunter_duration);
+       
+        yield return new WaitForSeconds(currentSkill.buffDuration);
 
         _ub.beastKiller -= additionalBeastKiller;
     }
 
     IEnumerator Manastrike()
     {
-        GameObject _temp = Instantiate(specialEffect, transform.position, Quaternion.identity);
-        _temp.GetComponent<TimeLife>().life = 1f;
-        _temp.GetComponent<SpriteRenderer>().material.color = Color.cyan;
-        manastrike_currentCd = manastrike_cd;
+        //GameObject _temp = Instantiate(specialEffect, transform.position, Quaternion.identity);
+        //_temp.GetComponent<TimeLife>().life = 1f;
+        //_temp.GetComponent<SpriteRenderer>().material.color = Color.cyan;
+
         _ub.isManastriking = true;
         _ub.fiendKiller += additionalFiendKiller;
+
         yield return new WaitUntil(() => _ub.isManastriking == false);
 
         _ub.fiendKiller -= additionalFiendKiller;
     }
 
-    IEnumerator MysticField()
+    IEnumerator MysticField(Skill currentSkill)
     {
-        GameObject _temp = Instantiate(specialEffect, transform.position, Quaternion.identity);
-        _temp.GetComponent<TimeLife>().life = 1f;
-        _temp.GetComponent<SpriteRenderer>().material.color = Color.white;
-        mystic_currentCd = mystic_cd;
-        yield return new WaitForSeconds(mystic_duration);
+        //GameObject _temp = Instantiate(specialEffect, transform.position, Quaternion.identity);
+        //_temp.GetComponent<TimeLife>().life = 1f;
+        //_temp.GetComponent<SpriteRenderer>().material.color = Color.white;
 
-        
+        _ub.isMysticFielding = true;
+
+        yield return new WaitForSeconds(currentSkill.buffDuration);
+
+        _ub.isMysticFielding = false;
+
     }
 }

@@ -1,13 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitBarStatus : MonoBehaviour
+public class HPBarController : MonoBehaviour
 {
-    private Vector3 localScale;
     private UnitBase _ub;
-
-    private float defaultScale;
+    private Vector3 localScale;
+    private float defaultX;
 
     private void Awake()
     {
@@ -18,13 +18,15 @@ public class UnitBarStatus : MonoBehaviour
     void Start()
     {
         localScale = transform.localScale;
-        defaultScale = transform.localScale.x;
+        defaultX = transform.localScale.x;
     }
 
     // Update is called once per frame
     void Update()
     {
-        localScale.x = defaultScale * (_ub.currentHp / _ub.maxHp);
+        localScale.x = defaultX * (_ub.currentHp / _ub.maxHp);
         transform.localScale = localScale;
     }
+
+    //private void UpdateBar(Vector3)
 }

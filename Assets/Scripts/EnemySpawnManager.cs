@@ -49,7 +49,8 @@ public class EnemySpawnManager : MonoBehaviour
         GameManager.Instance.isEnemyPresent = true;
         GameManager.Instance.SetCheckpoint();
         int select = Random.Range(0, GameManager.Instance._normalEnemyPool.Length);
-        if (GameManager.Instance.currentWave % 4 == 0)
+
+        if (GameManager.Instance.currentWave % GameManager.Instance.bossWave == 0)
         {
             Instantiate(GameManager.Instance._bossEnemyPool[select], new Vector3(Random.Range(-8f, 8f), 0f, 0f), Quaternion.identity);
         }

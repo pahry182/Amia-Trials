@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     public bool isUpdatingVolume;
     public bool isNormalBattleThemePlayed;
     public int currentWave;
+    public int bossWave = 6;
     public int currentLife;
     public int setLife = 3;
     public int currentCheckpoint = 1;
