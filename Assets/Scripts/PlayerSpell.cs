@@ -11,7 +11,7 @@ public class PlayerSpell : MonoBehaviour
         public string spellName;
         public Image cdFillImage;
         public Image manaFillImage;
-        public UnitElement spellElement;
+        public Element spellElement;
         public float cooldown;
         public float manaCost;
         public float baseManaCost;
@@ -174,9 +174,19 @@ public class PlayerSpell : MonoBehaviour
         }
         else
         {
+            MysticFieldTrigger();
             return true;
         }
         return false;
+    }
+
+    private void MysticFieldTrigger()
+    {
+        if (_ub.isMysticFielding)
+        {
+            _ub.currentShd += currentSpell.manaCost;
+            _ub.shdElement = currentSpell.spellElement;
+        }
     }
 
     private void DeliverSpellDamage(float _spellDamageAmount)

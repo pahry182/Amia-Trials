@@ -119,6 +119,7 @@ public class PlayerSkill : MonoBehaviour
         Skill currentSkill = CheckSkillCondition("Manastrike");
         if (currentSkill != null)
         {
+            print("Ponged");
             StartCoroutine(Manastrike());
         }
     }

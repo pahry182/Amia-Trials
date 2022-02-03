@@ -10,7 +10,7 @@ public enum UnitType
     COUNT
 }
 
-public enum UnitElement
+public enum Element
 {
     Neutral,
     Fire,
@@ -69,7 +69,8 @@ public class UnitBase : MonoBehaviour
 
     [Header("Advanced Stat")]
     public UnitType unitType = UnitType.Human;
-    public UnitElement unitElement = UnitElement.Neutral;
+    public Element unitElement = Element.Neutral;
+    public Element shdElement = Element.Neutral;
     public bool isBoss;
     public float humanKiller = 0f;
     public float beastKiller = 0f;
@@ -131,7 +132,7 @@ public class UnitBase : MonoBehaviour
             frozenDuration -= Time.deltaTime;
             unitState = UnitAnimState.frozen;
         }
-        else if (attCooldown <= 0 && unitState != UnitAnimState.special)
+        else if (attCooldown <= 0 && unitState != UnitAnimState.special && unitState != UnitAnimState.moving)
         {
             unitState = UnitAnimState.idle;
         }
@@ -172,9 +173,10 @@ public class UnitBase : MonoBehaviour
         _rb.AddForce(transform.up * 4, ForceMode2D.Impulse);
     }
 
-    public void DealDamage(float amount, bool isSpellDamage = false, UnitElement _spellElementType = UnitElement.Neutral)
+    public void DealDamage(float amount, bool isSpellDamage = false, Element _spellElementType = Element.Neutral, bool isCrit = false)
     {
         UnitBase target = _UnitAI.target;
+        amount = CalculateKillers(amount, target);
         if (isSpellDamage)
         {
             amount = CalculateElementalRelation(amount, _spellElementType, target);
@@ -182,24 +184,86 @@ public class UnitBase : MonoBehaviour
         }
         else
         {
-            float targetDamageReduction = (0.06f * target.def) / (1 + 0.06f * target.def);
-            amount = CalculateKillers(amount, target);
-            amount -= Mathf.Round(amount * targetDamageReduction);
+            if (target.def < 0)
+            {
+                float targetDamageIncrease = 2 - Mathf.Pow(0.94f, -target.def);
+                amount += Mathf.Round(amount * (targetDamageIncrease - 1));
+            }
+            else
+            {
+                const float CReduction = 0.06f;
+                float targetDamageReduction = (CReduction * target.def) / (1 + (CReduction * target.def));
+                amount -= Mathf.Round(amount * targetDamageReduction);
+            }
         }
 
-        if (target.currentHp - amount < 1)
+        int select = Random.Range(0, 100);
+        if (select < critChance)
         {
-            DeclareDeath(target);
+            amount += amount * critMultiplier;
+            isCrit = true;
+        }
+
+        if (target.currentShd >= amount)
+        {
+            target.currentShd -= amount;
+        }
+        else if (target.currentShd < amount && target.currentShd > 0)
+        {
+            target.currentHp -= (amount - target.currentShd);
+            target.currentShd = 0;
         }
         else
         {
             target.currentHp -= amount;
         }
 
+        if (target.currentHp < 1)
+        {
+            DeclareDeath(target);
+        }
+
         if (isManastriking) isManastriking = false;
 
-        print(gameObject.tag + " " + amount);
+        Vector3 pos = target.transform.position;
+        pos.y += Random.Range(-0.2f, 0.2f);
+        GameObject temp = Instantiate(GameManager.Instance.textDamage, pos, Quaternion.identity);
+        temp.GetComponentInChildren<TextMeshPro>().color = ElementalDamageColor(_spellElementType);
+        if (isCrit)
+        {
+            temp.GetComponentInChildren<TextMeshPro>().text = "Crit " + Mathf.Round(amount).ToString();
+        }
+        else
+        {
+            temp.GetComponentInChildren<TextMeshPro>().text = Mathf.Round(amount).ToString();
+        }
+        Destroy(temp, 2f);
         GameManager.Instance.StatisticTrackDamageDealt(amount, gameObject);
+    }
+
+    private Color32 ElementalDamageColor(Element _element)
+    {
+        switch (_element)
+        {
+            case Element.Fire:
+                return new Color32(255, 48, 4, 255);
+            case Element.Water:
+                return new Color32(50, 110, 255, 255);
+            case Element.Lightning:
+                return new Color32(237, 20, 241, 255);
+            case Element.Earth:
+                return new Color32(203, 177, 41, 255);
+            case Element.Wind:
+                return new Color32(32, 254, 2, 255);
+            case Element.Ice:
+                return new Color32(0, 255, 232, 255);
+            case Element.Light:
+                return new Color32(255, 253, 139, 255);
+            case Element.Dark:
+                return new Color32(69, 69, 69, 255);
+            default:
+                return new Color32(255, 255, 255, 255);
+        }
     }
 
     private float CalculateKillers(float _amount, UnitBase _target)
@@ -223,32 +287,32 @@ public class UnitBase : MonoBehaviour
         return _amount;
     }
 
-    private float CalculateElementalRelation(float _amount, UnitElement _spellElementType, UnitBase _target)
+    private float CalculateElementalRelation(float _amount, Element _spellElementType, UnitBase _target)
     {
         switch (_spellElementType)
         {
-            case UnitElement.Fire:
+            case Element.Fire:
                 _amount += _amount * (fireAtt - _target.fireRes);
                 break;
-            case UnitElement.Water:
+            case Element.Water:
                 _amount += _amount * (waterAtt - _target.waterRes);
                 break;
-            case UnitElement.Lightning:
+            case Element.Lightning:
                 _amount += _amount * (lightningAtt - _target.lightningRes);
                 break;
-            case UnitElement.Earth:
+            case Element.Earth:
                 _amount += _amount * (earthAtt - _target.earthRes);
                 break;
-            case UnitElement.Wind:
+            case Element.Wind:
                 _amount += _amount * (windAtt - _target.windRes);
                 break;
-            case UnitElement.Ice:
+            case Element.Ice:
                 _amount += _amount * (iceAtt - _target.iceRes);
                 break;
-            case UnitElement.Light:
+            case Element.Light:
                 _amount += _amount * (lightAtt - _target.lightRes);
                 break;
-            case UnitElement.Dark:
+            case Element.Dark:
                 _amount += _amount * (darkAtt - _target.darkRes);
                 break;
         }

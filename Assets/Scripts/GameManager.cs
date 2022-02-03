@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
     public GameObject[] _normalEnemyPool;
     public GameObject[] _bossEnemyPool;
+    public GameObject textDamage;
     [HideInInspector] public EnemySpawnManager _enemySpawnManager;
     public MainSceneController _msC;
     public UnitBase _player;
@@ -125,9 +126,12 @@ public class GameManager : MonoBehaviour
         _player.ReviveUnit();
         _player.unitLevel = 1;
         _player.maxHp = baseHp;
+        _player.maxShd = baseHp;
         _player.maxMp = baseMp;
         _player.maxXp = baseXp;
         _player.currentHp = baseHp;
+        _player.currentShd = 0f;
+        _player.currentMp = baseMp;
         _player.currentXp = 0f;
         _player.att = baseAtt;
         _player.def = basedef;

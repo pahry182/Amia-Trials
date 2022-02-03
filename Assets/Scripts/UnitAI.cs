@@ -75,8 +75,15 @@ public class UnitAI : MonoBehaviour
 
     public void DetectTarget()
     {
-        targetPosition = GameObject.FindGameObjectWithTag(targetTag).GetComponent<Transform>();
-        target = GameObject.FindGameObjectWithTag(targetTag).GetComponent<UnitBase>();
+        try
+        {
+            targetPosition = GameObject.FindGameObjectWithTag(targetTag).GetComponent<Transform>();
+            target = targetPosition.GetComponent<UnitBase>();
+        }
+        catch (System.Exception)
+        {
+            print("Pong");
+        }
     }
 
     void MoveToTarget()
@@ -85,8 +92,10 @@ public class UnitAI : MonoBehaviour
             !isTargetInAttackRange && 
             !target.isUnitDead && 
             !_thisUnit.isUnitDead &&
-            _thisUnit.unitState == UnitAnimState.idle)
+            (_thisUnit.unitState == UnitAnimState.idle || _thisUnit.unitState == UnitAnimState.moving)
+            )
         {
+            _thisUnit.unitState = UnitAnimState.moving;
             transform.position = Vector2.MoveTowards(transform.position, targetPosition.position, _thisUnit.movSpeed * Time.deltaTime);
         }        
     }
@@ -95,7 +104,9 @@ public class UnitAI : MonoBehaviour
     {
         var collider = Physics2D.OverlapCircle(transform.position, attRange, targetLayer);
         opponentDetected = collider != null;
-        if (opponentDetected && !target.isUnitDead && !_thisUnit.isUnitDead && _thisUnit.unitState == UnitAnimState.idle)
+        if (target == null) return;
+        if (opponentDetected && !target.isUnitDead && !_thisUnit.isUnitDead &&
+            (_thisUnit.unitState == UnitAnimState.idle || _thisUnit.unitState == UnitAnimState.moving))
         {
             onOpponentDetected?.Invoke(collider.gameObject);
             _thisUnit.unitState = UnitAnimState.attacking;

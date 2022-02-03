@@ -64,7 +64,7 @@ public class EnemySpawnManager : MonoBehaviour
 
     private void AudioCheck()
     {
-        if ((GameManager.Instance.currentWave) % 4 == 0 && GameManager.Instance.currentWave != 0)
+        if ((GameManager.Instance.currentWave) % GameManager.Instance.bossWave == 0 && GameManager.Instance.currentWave != 0)
         {
             GameManager.Instance.PlayBgm("Battle_Boss");
         }
