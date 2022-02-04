@@ -67,6 +67,31 @@ PrefabInstance:
       propertyPath: growthAtt
       value: 2.25
       objectReference: {fileID: 0}
+    - target: {fileID: 8758871889207156749, guid: b2c1e936e50e5934b86ecaf02624efda,
+        type: 3}
+      propertyPath: attSfx.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758871889207156749, guid: b2c1e936e50e5934b86ecaf02624efda,
+        type: 3}
+      propertyPath: dieSfx.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758871889207156749, guid: b2c1e936e50e5934b86ecaf02624efda,
+        type: 3}
+      propertyPath: attSfx.Array.data[0]
+      value: Wolf Att 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758871889207156749, guid: b2c1e936e50e5934b86ecaf02624efda,
+        type: 3}
+      propertyPath: dieSfx.Array.data[0]
+      value: Wolf Die 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758871889207156749, guid: b2c1e936e50e5934b86ecaf02624efda,
+        type: 3}
+      propertyPath: dieSfx.Array.data[1]
+      value: Wolf Die 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8758871889207157233, guid: b2c1e936e50e5934b86ecaf02624efda,
         type: 3}
       propertyPath: m_Name

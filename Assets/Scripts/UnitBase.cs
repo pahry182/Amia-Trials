@@ -31,7 +31,8 @@ public enum UnitAnimState
     attacking,
     special,
     stunned,
-    frozen
+    frozen,
+    die
 }
 
 public class UnitBase : MonoBehaviour
@@ -105,6 +106,14 @@ public class UnitBase : MonoBehaviour
     public float frozenDuration;
     [HideInInspector] public bool isAttack = false;
 
+    [Header("Sounds")]
+    public string[] attSfx;
+    public string[] useSpellSfx;
+    public string[] dieSfx;
+
+    [Header("Enemy AI")]
+    public int specialAttackChance = 20;
+
     //def/att /2 *10 = total taken damage
 
 
@@ -122,7 +131,11 @@ public class UnitBase : MonoBehaviour
         {
             attCooldown -= Time.deltaTime;
         }
-        if (stunDuration > 0)
+        if (isUnitDead)
+        {
+            unitState = UnitAnimState.die;
+        }
+        else if (stunDuration > 0)
         {
             stunDuration -= Time.deltaTime;
             unitState = UnitAnimState.stunned;
@@ -144,10 +157,16 @@ public class UnitBase : MonoBehaviour
         }
     }
 
+    private void PlaySfxUnit(string[] sfx)
+    {
+        GameManager.Instance.PlaySfx(sfx[Random.Range(0, sfx.Length)]);
+    }
+
     public void Attack()
     {
         if (attCooldown <= 0 && !isUnitDead && unitState == UnitAnimState.attacking)
         {
+            PlaySfxUnit(attSfx);
             attCooldown = attSpeed;
             Jump();
             DealDamage(att);
@@ -170,7 +189,10 @@ public class UnitBase : MonoBehaviour
 
     public void Jump()
     {
-        _rb.AddForce(transform.up * 4, ForceMode2D.Impulse);
+        if(gameObject.tag == "Enemy")
+        {
+            _rb.AddForce(transform.up * 4, ForceMode2D.Impulse);
+        }
     }
 
     public void DealDamage(float amount, bool isSpellDamage = false, Element _spellElementType = Element.Neutral, bool isCrit = false)
@@ -321,6 +343,7 @@ public class UnitBase : MonoBehaviour
 
     public void DeclareDeath(UnitBase target)
     {
+        target.PlaySfxUnit(target.dieSfx);
         target.currentHp = 0;
         target.isUnitDead = true;
         target.GetComponentInChildren<Animator>().SetBool("isUnitDead", true);
@@ -366,5 +389,19 @@ public class UnitBase : MonoBehaviour
         currentMp = maxMp;
         isUnitDead = false;
         GetComponentInChildren<Animator>().SetBool("isUnitDead", false);
+    }
+
+    public IEnumerator EnemySpecialAttack()
+    {
+        if (attCooldown <= 0 && !isUnitDead && unitState == UnitAnimState.attacking)
+        {
+            PlaySfxUnit(attSfx);
+            attCooldown = attSpeed;
+            _rb.AddForce(transform.up * 6, ForceMode2D.Impulse);
+            _UnitAI.target.stunDuration += 1;
+            DealDamage(att*1.2f);
+        }
+         
+        yield return new WaitForSeconds(0f);
     }
 }

@@ -127,6 +127,16 @@ PrefabInstance:
       propertyPath: growthDef
       value: 3.27
       objectReference: {fileID: 0}
+    - target: {fileID: 831818209590136807, guid: 00de9b69d04bc1d43a39c8a81740b9eb,
+        type: 3}
+      propertyPath: attSfx.Array.data[0]
+      value: Slime Att 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 831818209590136807, guid: 00de9b69d04bc1d43a39c8a81740b9eb,
+        type: 3}
+      propertyPath: dieSfx.Array.data[0]
+      value: Slime Die 1
+      objectReference: {fileID: 0}
     - target: {fileID: 831818209808847734, guid: 00de9b69d04bc1d43a39c8a81740b9eb,
         type: 3}
       propertyPath: m_LocalScale.x

@@ -111,11 +111,33 @@ public class UnitAI : MonoBehaviour
             onOpponentDetected?.Invoke(collider.gameObject);
             _thisUnit.unitState = UnitAnimState.attacking;
             isTargetInAttackRange = true;
-            _thisUnit.Attack();
+            if (gameObject.tag == "Enemy")
+            {
+                EnemyAttackPattern();
+            }
+            else
+            {
+                _thisUnit.Attack();
+            }
         }
         else
         {
             isTargetInAttackRange = false;
+        }
+    }
+
+
+    private void EnemyAttackPattern()
+    {
+        int select = Random.Range(0, 100);
+        if (select < _thisUnit.specialAttackChance)
+        {
+            print("pnoged");
+            StartCoroutine(_thisUnit.EnemySpecialAttack());
+        }
+        else
+        {
+            _thisUnit.Attack();
         }
     }
 }
