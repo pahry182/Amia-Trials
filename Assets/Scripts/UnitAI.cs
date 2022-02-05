@@ -23,6 +23,7 @@ public class UnitAI : MonoBehaviour
 
     [Header("Direction")]
     [HideInInspector] public float unitDir;
+    private bool isThreshold = false, seventyPercent = false, fivetyPercent = false, thirtyPercent = false;
 
     public bool opponentDetected { get; internal set; }
 
@@ -130,10 +131,36 @@ public class UnitAI : MonoBehaviour
     private void EnemyAttackPattern()
     {
         int select = Random.Range(0, 100);
-        if (select < _thisUnit.specialAttackChance)
+        if (_thisUnit.isBoss)
         {
-            print("pnoged");
-            StartCoroutine(_thisUnit.EnemySpecialAttack());
+            BossAttackPattern();
+        }
+        else if (select < _thisUnit.specialAttackChance)
+        {
+            _thisUnit.EnemySpecialAttack();
+        }
+        else
+        {
+            _thisUnit.Attack();
+        }
+    }
+
+    private void BossAttackPattern()
+    {
+        if (_thisUnit.currentHp <= _thisUnit.maxHp * 0.7f && !seventyPercent)
+        {
+            seventyPercent = true;
+            _thisUnit.EnemyThreshold();
+        }
+        else if (_thisUnit.currentHp <= _thisUnit.maxHp * 0.5f && !fivetyPercent)
+        {
+            fivetyPercent = true;
+            _thisUnit.EnemyThreshold();
+        }
+        else if (_thisUnit.currentHp <= _thisUnit.maxHp * 0.3f && !thirtyPercent)
+        {
+            thirtyPercent = true;
+            _thisUnit.EnemyThreshold();
         }
         else
         {

@@ -391,7 +391,7 @@ public class UnitBase : MonoBehaviour
         GetComponentInChildren<Animator>().SetBool("isUnitDead", false);
     }
 
-    public IEnumerator EnemySpecialAttack()
+    public void EnemySpecialAttack()
     {
         if (attCooldown <= 0 && !isUnitDead && unitState == UnitAnimState.attacking)
         {
@@ -401,7 +401,42 @@ public class UnitBase : MonoBehaviour
             _UnitAI.target.stunDuration += 1;
             DealDamage(att*1.2f);
         }
-         
-        yield return new WaitForSeconds(0f);
+    }
+
+    public void EnemyThreshold()
+    {
+        int select = Random.Range(0, 2);
+        switch (select)
+        {
+            case 0:
+                EnemyThresholdAttack();
+                return;
+            case 1:
+                EnemyThresholdHeal();
+                return;
+        }
+    }
+    private void EnemyThresholdAttack()
+    {
+        if (attCooldown <= 0 && !isUnitDead && unitState == UnitAnimState.attacking)
+        {
+            PlaySfxUnit(attSfx);
+            attCooldown = attSpeed * 2;
+            _rb.AddForce(transform.forward * 3, ForceMode2D.Impulse);
+            _UnitAI.target.stunDuration += 2;
+            DealDamage(att * 1.8f);
+        }
+    }
+
+    private void EnemyThresholdHeal()
+    {
+        if (attCooldown <= 0 && !isUnitDead && unitState == UnitAnimState.attacking)
+        {
+            PlaySfxUnit(attSfx);
+            attCooldown = attSpeed * 2;
+            _rb.AddForce(transform.forward * 3, ForceMode2D.Impulse);
+            _UnitAI.target.stunDuration += 2;
+            currentHp += maxHp * 0.3f;
+        }
     }
 }
