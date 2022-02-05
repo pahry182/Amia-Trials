@@ -100,7 +100,12 @@ PrefabInstance:
     - target: {fileID: 831818209590136807, guid: 00de9b69d04bc1d43a39c8a81740b9eb,
         type: 3}
       propertyPath: attSpeed
-      value: 3.27
+      value: 3.82
+      objectReference: {fileID: 0}
+    - target: {fileID: 831818209590136807, guid: 00de9b69d04bc1d43a39c8a81740b9eb,
+        type: 3}
+      propertyPath: growthHp
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 831818209590136807, guid: 00de9b69d04bc1d43a39c8a81740b9eb,
         type: 3}
@@ -120,7 +125,7 @@ PrefabInstance:
     - target: {fileID: 831818209590136807, guid: 00de9b69d04bc1d43a39c8a81740b9eb,
         type: 3}
       propertyPath: growthAtt
-      value: 2.62
+      value: 1.23
       objectReference: {fileID: 0}
     - target: {fileID: 831818209590136807, guid: 00de9b69d04bc1d43a39c8a81740b9eb,
         type: 3}

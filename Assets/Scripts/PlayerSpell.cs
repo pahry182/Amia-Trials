@@ -55,7 +55,7 @@ public class PlayerSpell : MonoBehaviour
     private int lastLevel;
     public float sharedCd = 0;
     public float sharedCurrentCd = 0;
-    public Spell currentSpell = null;
+    [HideInInspector] public Spell currentSpell = null;
 
     public Spell[] spellList;
     public GameObject specialEffect;

@@ -65,6 +65,7 @@ public class UnitBase : MonoBehaviour
     [Header("Growth Stat")]
     public float growthHp;
     public float growthMp;
+    public float growthManaReg = 0;
     public float growthAtt;
     public float growthDef;
 
@@ -151,6 +152,7 @@ public class UnitBase : MonoBehaviour
         }
 
         _levelText.text = "Lv. " + unitLevel;
+
         if (currentMp < maxMp && manaRegen != 0 && !isUnitDead)
         {
             currentMp += Time.deltaTime * manaRegen;
@@ -259,7 +261,7 @@ public class UnitBase : MonoBehaviour
         {
             temp.GetComponentInChildren<TextMeshPro>().text = Mathf.Round(amount).ToString();
         }
-        Destroy(temp, 2f);
+        Destroy(temp, 3f);
         GameManager.Instance.StatisticTrackDamageDealt(amount, gameObject);
     }
 
@@ -374,6 +376,7 @@ public class UnitBase : MonoBehaviour
         maxXp = (int)((30 + maxXp) * 1.02);
         maxHp += growthHp;
         maxMp += growthMp;
+        manaRegen += growthManaReg;
         att += growthAtt;
         if (unitLevel % 4 == 0)
         {
@@ -425,6 +428,9 @@ public class UnitBase : MonoBehaviour
             _rb.AddForce(transform.forward * 3, ForceMode2D.Impulse);
             _UnitAI.target.stunDuration += 2;
             DealDamage(att * 1.8f);
+            var temp = Instantiate(GameManager.Instance.textDamage, transform.position, Quaternion.identity);
+            temp.GetComponentInChildren<TextMeshPro>().text = "Threshold Attack!";
+            Destroy(temp, 3f);
         }
     }
 
@@ -437,6 +443,9 @@ public class UnitBase : MonoBehaviour
             _rb.AddForce(transform.forward * 3, ForceMode2D.Impulse);
             _UnitAI.target.stunDuration += 2;
             currentHp += maxHp * 0.3f;
+            var temp = Instantiate(GameManager.Instance.textDamage, transform.position, Quaternion.identity);
+            temp.GetComponentInChildren<TextMeshPro>().text = "Threshold Heal!";
+            Destroy(temp, 3f);
         }
     }
 }
