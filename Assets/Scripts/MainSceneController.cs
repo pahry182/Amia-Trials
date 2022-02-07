@@ -9,6 +9,7 @@ public class MainSceneController : UIController
     public CanvasGroup startMenuPanel;
     public CanvasGroup ingamePanel;
     public CanvasGroup losePanel;
+    public DescriptionWindowController _dscw;
     public TextMeshProUGUI defeatText;
     public TextMeshProUGUI waveText;
     public TextMeshProUGUI lifeText;

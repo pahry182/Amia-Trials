@@ -52,7 +52,7 @@ public class PlayerSkill : MonoBehaviour
         }
     }
     private UnitBase _ub;
-    [SerializeField] private Skill[] playerSkills;
+    public Skill[] playerSkills;
 
     [Header("Hunter's Instinct")]
     public float additionalBeastKiller = 0.4f;

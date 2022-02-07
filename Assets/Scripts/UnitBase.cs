@@ -119,9 +119,6 @@ public class UnitBase : MonoBehaviour
     [Header("Enemy AI")]
     public int specialAttackChance = 20;
 
-    //def/att /2 *10 = total taken damage
-
-
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();

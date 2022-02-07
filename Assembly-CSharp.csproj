@@ -129,11 +129,13 @@
     <Compile Include="Assets\DragonBones\Scripts\unity\UnityUGUIDisplay.cs" />
     <Compile Include="Assets\Scripts\AmiaDragonbone.cs" />
     <Compile Include="Assets\Scripts\AudioController.cs" />
+    <Compile Include="Assets\Scripts\DescriptionWindowController.cs" />
     <Compile Include="Assets\Scripts\EnemySpawnManager.cs" />
     <Compile Include="Assets\Scripts\EnemyStatRandomizer.cs" />
     <Compile Include="Assets\Scripts\EventManager.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\HPBarController.cs" />
+    <Compile Include="Assets\Scripts\HoldButtonDescWindow.cs" />
     <Compile Include="Assets\Scripts\MainSceneController.cs" />
     <Compile Include="Assets\Scripts\ManaBarController.cs" />
     <Compile Include="Assets\Scripts\PlayerSkill.cs" />
