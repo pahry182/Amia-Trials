@@ -10,7 +10,7 @@ public class AmiaDragonbone : MonoBehaviour
     private UnityArmatureComponent _player;
     private UnitAI _thisUnitAI;
     private UnitBase _thisUnit;
-    public string[] attackAnims, idleAnims, moveAnims, knockback, die;
+    public string[] skillAnims, attackAnims, idleAnims, moveAnims, knockback, die;
     private bool isAllowChange;
     private UnitAnimState lastState;
 
@@ -41,21 +41,22 @@ public class AmiaDragonbone : MonoBehaviour
         {
             ForceChangeAnim(die);
         }
+        else if (_thisUnit.unitState == UnitAnimState.special)
+        {
+            ForceChangeAnim(skillAnims);
+        }
         else if (_thisUnit.unitState == UnitAnimState.attacking)
         {
             ForceChangeAnim(attackAnims);
         }
-
         else if (_thisUnit.unitState == UnitAnimState.idle)
         {
             ForceChangeAnim(idleAnims);
         }
-
         else if (_thisUnit.unitState == UnitAnimState.moving)
         {
             ForceChangeAnim(moveAnims);
         }
-
         else if (_thisUnit.unitState == UnitAnimState.stunned)
         {
             ForceChangeAnim(knockback);
@@ -78,7 +79,15 @@ public class AmiaDragonbone : MonoBehaviour
         if (!_player.animation.isPlaying)
         {
             if (_player.animation.lastAnimationName == die[0] && state == UnitAnimState.die) return;
+
             int select = Random.Range(0, anims.Length);
+
+            if (state == UnitAnimState.special)
+            {
+                _player.animation.GotoAndPlayByTime(anims[select], 0.4f);
+                return;
+            }
+            
             _player.animation.Play(anims[select], 1);
         }
     }

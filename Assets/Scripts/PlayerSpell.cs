@@ -12,6 +12,7 @@ public class PlayerSpell : MonoBehaviour
         public Image cdFillImage;
         public Image manaFillImage;
         public Element spellElement;
+        public float additionalChannelTime;
         public float cooldown;
         public float manaCost;
         public float baseManaCost;
@@ -172,6 +173,10 @@ public class PlayerSpell : MonoBehaviour
         {
             print("No Target");
         }
+        else if (_ub.unitState == UnitAnimState.stunned || _ub.unitState == UnitAnimState.frozen)
+        {
+            print("Under Cooldown");
+        }
         else
         {
             MysticFieldTrigger();
@@ -192,7 +197,7 @@ public class PlayerSpell : MonoBehaviour
     private void DeliverSpellDamage(float _spellDamageAmount)
     {
         Destroy(Instantiate(specialEffect, _ub._UnitAI.targetPosition.position, Quaternion.identity), 2f);
-        _ub.Cast();
+        _ub.Cast(currentSpell.additionalChannelTime);
         _ub.currentMp -= currentSpell.manaCost;
         _ub.DealDamage(_spellDamageAmount, true, currentSpell.spellElement);
         sharedCd = StartCooldown();

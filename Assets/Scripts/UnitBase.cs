@@ -105,7 +105,11 @@ public class UnitBase : MonoBehaviour
     public float attCooldown;
     public float stunDuration;
     public float frozenDuration;
+    public float currentChanneling;
     [HideInInspector] public bool isAttack = false;
+
+    [Header("Animation")]
+    public float channelTime = 0.8f;
 
     [Header("Sounds")]
     public string[] attSfx;
@@ -157,6 +161,11 @@ public class UnitBase : MonoBehaviour
         {
             currentMp += Time.deltaTime * manaRegen;
         }
+
+        if (currentChanneling > 0)
+        {
+            currentChanneling -= Time.deltaTime;
+        }
     }
 
     private void PlaySfxUnit(string[] sfx)
@@ -175,17 +184,17 @@ public class UnitBase : MonoBehaviour
         }
     }
 
-    public void Cast()
+    public void Cast(float additionalChannelTime)
     {
-        StartCoroutine(Casting());
+        StartCoroutine(Casting(channelTime+additionalChannelTime));
     }
 
-    private IEnumerator Casting()
+    private IEnumerator Casting(float channelTime)
     {
         unitState = UnitAnimState.special;
-        GetComponentInChildren<Animator>().SetBool("isUnitSpecial", true);
-        yield return new WaitForSeconds(0.4f);
-        GetComponentInChildren<Animator>().SetBool("isUnitSpecial", false);
+        
+        yield return new WaitForSeconds(channelTime);
+        
         unitState = UnitAnimState.idle;
     }
 
@@ -441,7 +450,7 @@ public class UnitBase : MonoBehaviour
             PlaySfxUnit(attSfx);
             attCooldown = attSpeed * 2;
             _rb.AddForce(transform.forward * 3, ForceMode2D.Impulse);
-            _UnitAI.target.stunDuration += 2;
+            _UnitAI.target.stunDuration += 4;
             currentHp += maxHp * 0.3f;
             var temp = Instantiate(GameManager.Instance.textDamage, transform.position, Quaternion.identity);
             temp.GetComponentInChildren<TextMeshPro>().text = "Threshold Heal!";

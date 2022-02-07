@@ -11,6 +11,7 @@ public class PlayerSkill : MonoBehaviour
         public string skillName;
         public Image cdFillImage;
         public Image manaFillImage;
+        public float additionalChannelTime;
         public float cooldown;
         public float currentCooldown;
         public float manaCost;
@@ -93,10 +94,14 @@ public class PlayerSkill : MonoBehaviour
         {
             print(currentSkill.skillName + " Under Cooldown");
         }
+        else if (_ub.unitState == UnitAnimState.stunned || _ub.unitState == UnitAnimState.frozen)
+        {
+            print(currentSkill.skillName + " Under Cooldown");
+        }
         else
         {
             _ub.currentMp -= currentSkill.manaCost;
-            _ub.Cast();
+            _ub.Cast(currentSkill.additionalChannelTime);
             currentSkill.StartCdFill();
 
             return currentSkill;
