@@ -15,6 +15,13 @@ public class HoldButtonDescWindow : MonoBehaviour, IPointerDownHandler, IPointer
     private bool isLongPressed = false;
     private float elapsedTime = 0f;
 
+    //private Button button;
+
+    private void Awake()
+    {
+        //button = GetComponent<Button>();
+    }
+
     public void OnPointerDown(PointerEventData eventData)
     {
         isPointerDown = true;
@@ -30,6 +37,8 @@ public class HoldButtonDescWindow : MonoBehaviour, IPointerDownHandler, IPointer
                 isLongPressed = true;
                 elapsedTime = 0f;
                 Action();
+                //if (button.interactable)
+                    
             }
         }
     }
