@@ -9,6 +9,9 @@ public class MainSceneController : UIController
     public CanvasGroup startMenuPanel;
     public CanvasGroup ingamePanel;
     public CanvasGroup losePanel;
+    public CanvasGroup creditsPanel;
+    public CanvasGroup settingPanel;
+    public CanvasGroup guideMenuPanel, guideGamePanel;
     public TextMeshProUGUI defeatText;
     public TextMeshProUGUI waveText;
     public TextMeshProUGUI lifeText;
@@ -40,8 +43,9 @@ public class MainSceneController : UIController
 
     private IEnumerator StartGame()
     {
-        StartCoroutine(FadeOut(backgroundPanel, 1f));
+        StartCoroutine(FadeOut(backgroundPanel, 0.4f));
         StartCoroutine(FadeOut(startMenuPanel, 0.4f));
+        yield return new WaitForSeconds(0.4f);
         StartCoroutine(FadeIn(ingamePanel, 1f));
         //GameManager.Instance.PlayBgm("Battle_Normal");
         StartCoroutine(GameManager.Instance._enemySpawnManager.SpawnEnemy());
@@ -83,11 +87,11 @@ public class MainSceneController : UIController
         switch (chose)
         {
             case 0:
-                return "Bego ah";
+                return "GAME OVER";
             case 1:
-                return "Maen yang bener tod";
+                return "TRY AGAIN";
             default:
-                return "Jangan ampe kalah tod";
+                return "PONG?";
         }
     }
 
@@ -135,5 +139,62 @@ public class MainSceneController : UIController
         resultText.GetComponent<TextMeshProUGUI>().text = "Current Wave: " + GameManager.Instance.currentWave +
             " Current Life: " + GameManager.Instance.currentLife +
             " Current Checkpoint: " + GameManager.Instance.currentCheckpoint;
+    }
+
+    private IEnumerator smoothFadeTransition(float duration, CanvasGroup panel1, CanvasGroup panel2)
+    {
+        StartCoroutine(FadeOut(panel1, duration));
+        yield return new WaitForSeconds(duration);
+        StartCoroutine(FadeIn(panel2, duration));
+    }
+
+    public void creditsButton()
+    {
+        StartCoroutine(smoothFadeTransition(0.3f, startMenuPanel, creditsPanel));
+    }
+
+    public void closeCreditsButton()
+    {
+        StartCoroutine(smoothFadeTransition(0.3f, creditsPanel, startMenuPanel));
+    }
+
+    public void settingButton()
+    {
+        StartCoroutine(smoothFadeTransition(0.3f, startMenuPanel, settingPanel));
+    }
+
+    public void closeSettingButton()
+    {
+        StartCoroutine(smoothFadeTransition(0.3f, settingPanel, startMenuPanel));
+    }
+
+    public void guideButton()
+    {
+        StartCoroutine(smoothFadeTransition(0.3f, settingPanel, guideMenuPanel));
+    }
+
+    public void guideIngameButton()
+    {
+
+    }
+
+    public void closeGuideButtonInMenu()
+    {
+        StartCoroutine(smoothFadeTransition(0.3f, guideMenuPanel, settingPanel));
+    }
+
+    public void closeGuideButtonInGame()
+    {
+
+    }
+
+    public void pauseButton()
+    {
+
+    }
+
+    public void closePauseButton()
+    {
+
     }
 }
