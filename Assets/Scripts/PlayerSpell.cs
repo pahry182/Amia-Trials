@@ -189,6 +189,7 @@ public class PlayerSpell : MonoBehaviour
     {
         if (_ub.isMysticFielding)
         {
+            GameManager.Instance.PlaySfx("Barrier");
             _ub.currentShd += currentSpell.manaCost;
             _ub.shdElement = currentSpell.spellElement;
         }

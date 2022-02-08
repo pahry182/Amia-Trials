@@ -102,7 +102,9 @@ public class PlayerSkill : MonoBehaviour
         {
             _ub.currentMp -= currentSkill.manaCost;
             _ub.Cast(currentSkill.additionalChannelTime);
+            _ub.PlaySfxUnit(_ub.castingSfx);
             currentSkill.StartCdFill();
+
 
             return currentSkill;
         }

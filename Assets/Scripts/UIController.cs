@@ -25,6 +25,13 @@ public class UIController : MonoBehaviour
         container.interactable = true;
     }
 
+    public IEnumerator SmoothFadeTransition(float duration, CanvasGroup panel1, CanvasGroup panel2)
+    {
+        StartCoroutine(FadeOut(panel1, duration));
+        yield return new WaitForSeconds(duration);
+        StartCoroutine(FadeIn(panel2, duration));
+    }
+
     public IEnumerator AnimationWideIn(RectTransform container, float duration)
     {
         container.localScale = new Vector3(1, 1, 1);

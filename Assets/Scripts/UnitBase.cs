@@ -113,8 +113,9 @@ public class UnitBase : MonoBehaviour
 
     [Header("Sounds")]
     public string[] attSfx;
-    public string[] useSpellSfx;
+    public string[] castingSfx;
     public string[] dieSfx;
+    public string[] manastrikeSfx;
 
     [Header("Enemy AI")]
     public int specialAttackChance = 20;
@@ -165,7 +166,7 @@ public class UnitBase : MonoBehaviour
         }
     }
 
-    private void PlaySfxUnit(string[] sfx)
+    public void PlaySfxUnit(string[] sfx)
     {
         GameManager.Instance.PlaySfx(sfx[Random.Range(0, sfx.Length)]);
     }
@@ -253,7 +254,12 @@ public class UnitBase : MonoBehaviour
             DeclareDeath(target);
         }
 
-        if (isManastriking) isManastriking = false;
+        if (isManastriking) 
+        {
+            isManastriking = false;
+            PlaySfxUnit(manastrikeSfx);
+        }
+        
 
         Vector3 pos = target.transform.position;
         pos.y += Random.Range(-0.2f, 0.2f);
