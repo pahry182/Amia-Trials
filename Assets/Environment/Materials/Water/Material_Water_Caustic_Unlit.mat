@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Material_Water_Caustic_Unlit
-  m_Shader: {fileID: -6465566751694194690, guid: 7adb7836e8e421a49ac8c398a5b4797e,
+  m_Shader: {fileID: -6465566751694194690, guid: e996c1cdac5d8f6449a8619c351dc439,
     type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
   m_LightmapFlags: 4
@@ -21,7 +21,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - Texture2D_3ABD3B8C:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 8400000, guid: ce4996625dc12b74ab31806af2d04dd5, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_81D0ED11:
@@ -29,16 +29,31 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 2686d217d7f8d6248a705cce889e7333, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - Vector1_1098D7FE: 2.2
     - Vector1_128C7CD1: 0.71
-    - Vector1_BB49C78C: 0
+    - Vector1_52909EDA: -4.54
+    - Vector1_6A8B50F0: 1
+    - Vector1_8F5EE685: 2
+    - Vector1_BB49C78C: 0.101
     - Vector1_D7C5B66D: 2.7
-    - Vector1_DC129BE: 2.19
-    - Vector1_DD119790: 1.03
+    - Vector1_DC129BE: 3.48
+    - Vector1_DD119790: 1
     - Vector1_DDE1D04C: 0
     - Vector1_E0A9F501: 0.58
     m_Colors:
@@ -46,5 +61,6 @@ Material:
     - Color_A070067B: {r: 0.10840159, g: 0.7924528, b: 0.24666728, a: 0.54509807}
     - Color_A0D31A6A: {r: 1, g: 1, b: 1, a: 0}
     - Color_DD84C9EF: {r: 0.9575472, g: 0.98006004, b: 1, a: 1}
-    - Vector2_2F7B3F9F: {r: 3, g: 3, b: 0, a: 0}
+    - Vector2_2F7B3F9F: {r: 0.74, g: 4.14, b: -3.06, a: 0}
     - Vector2_E537B32A: {r: 0.44, g: 2.06, b: 0, a: 0}
+  m_BuildTextureStacks: []
