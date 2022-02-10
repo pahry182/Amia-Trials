@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4051301480572056635}
   - component: {fileID: 3367793614500244458}
-  - component: {fileID: 377634652838604551}
   - component: {fileID: 132072241940631082}
   - component: {fileID: 4560545467016276488}
   m_Layer: 0
@@ -54,6 +53,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -76,16 +76,9 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 256138483
-  m_SortingLayer: 1
+  m_SortingLayer: 0
   m_SortingOrder: 1
---- !u!222 &377634652838604551
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1935952743041376965}
-  m_CullTransparentMesh: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &132072241940631082
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -101,6 +94,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -175,6 +169,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 3367793614500244458}
   m_maskType: 0
+  _SortingLayer: 0
   _SortingLayerID: 256138483
   _SortingOrder: 1
 --- !u!95 &4560545467016276488

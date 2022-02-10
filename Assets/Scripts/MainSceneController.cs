@@ -11,14 +11,23 @@ public class MainSceneController : UIController
     public CanvasGroup losePanel;
     public CanvasGroup creditsPanel;
     public CanvasGroup settingPanel;
+    public CanvasGroup pausePanel;
     public CanvasGroup guideMenuPanel, guideGamePanel;
+    public CanvasGroup confirmWindow;
     public DescriptionWindowController _dscw;
     public TextMeshProUGUI defeatText;
     public TextMeshProUGUI waveText;
     public TextMeshProUGUI lifeText;
     public TextMeshProUGUI checkpointText;
-    public GameObject resultText;
+    public TextMeshProUGUI highscoreText;
+    public TextMeshProUGUI ingameHighscoreText;
+    public TextMeshProUGUI loseWaveText;
+    public TextMeshProUGUI loseLifeText;
+    public TextMeshProUGUI loseCheckpointText;
+    public TextMeshProUGUI loseHighscoreText;
     public Button RespawnButton;
+
+    private bool isStarted;
 
     private void Awake()
     {
@@ -26,6 +35,12 @@ public class MainSceneController : UIController
         startMenuPanel.gameObject.SetActive(true);
         ingamePanel.gameObject.SetActive(false);
         losePanel.gameObject.SetActive(false);
+    }
+
+    private void Start()
+    {
+        isStarted = true;
+        highscoreText.text = GameManager.Instance.highestScore.ToString();
     }
 
     private void Update()
@@ -38,8 +53,18 @@ public class MainSceneController : UIController
         {
             waveText.text = GameManager.Instance.currentWave.ToString();
         }
+
         lifeText.text = GameManager.Instance.currentLife.ToString();
         checkpointText.text = GameManager.Instance.currentCheckpoint.ToString();
+        ingameHighscoreText.text = GameManager.Instance.highestScore.ToString();
+    }
+
+    private void OnEnable()
+    {
+        if (isStarted)
+        {
+            highscoreText.text = GameManager.Instance.highestScore.ToString();
+        }
     }
 
     private IEnumerator StartGame()
@@ -67,13 +92,10 @@ public class MainSceneController : UIController
         yield return new WaitForSeconds(1f);
 
         defeatText.text = GenerateDefeatText();
-        resultText.SetActive(false);
         CalculateResult();
         StartCoroutine(FadeIn(losePanel, 0.4f));
 
         yield return new WaitForSeconds(0.2f);
-
-        StartCoroutine(FadeIn(resultText.GetComponent<CanvasGroup>(), 0.4f));
     }
 
     public void StartGameButton()
@@ -106,7 +128,13 @@ public class MainSceneController : UIController
     {
         //StartCoroutine(FadeOut(backgroundPanel, 1f));
         StartCoroutine(FadeOut(losePanel, 0.4f));
+        StartCoroutine(FadeOut(ingamePanel, 0.4f));
+        StartCoroutine(FadeOut(pausePanel, 0.4f));
+        StartCoroutine(FadeOut(confirmWindow, 0.4f));
+
+        StartCoroutine(FadeIn(backgroundPanel, 1f));
         StartCoroutine(FadeIn(startMenuPanel, 1f));
+        Time.timeScale = 1f;
         //StartCoroutine(GameManager.Instance._enemySpawnManager.SpawnEnemy());
 
         yield return new WaitForSeconds(0f);
@@ -137,9 +165,11 @@ public class MainSceneController : UIController
 
     public void CalculateResult()
     {
-        resultText.GetComponent<TextMeshProUGUI>().text = "Current Wave: " + GameManager.Instance.currentWave +
-            " Current Life: " + GameManager.Instance.currentLife +
-            " Current Checkpoint: " + GameManager.Instance.currentCheckpoint;
+        loseWaveText.text = GameManager.Instance.currentWave.ToString();
+        loseLifeText.text = GameManager.Instance.currentLife.ToString();
+        loseCheckpointText.text = GameManager.Instance.currentCheckpoint.ToString();
+        loseHighscoreText.text = GameManager.Instance.highestScore.ToString();
+
     }
 
     public void creditsButton()
@@ -164,7 +194,7 @@ public class MainSceneController : UIController
 
     public void guideButton()
     {
-        StartCoroutine(SmoothFadeTransition(0.3f, settingPanel, guideMenuPanel));
+        StartCoroutine(FadeIn(guideMenuPanel, 0.3f));
     }
 
     public void guideIngameButton()
@@ -172,9 +202,9 @@ public class MainSceneController : UIController
 
     }
 
-    public void closeGuideButtonInMenu()
+    public void CloseGuidePanel()
     {
-        StartCoroutine(SmoothFadeTransition(0.3f, guideMenuPanel, settingPanel));
+        StartCoroutine(FadeOut(guideMenuPanel, 0.3f));
     }
 
     public void closeGuideButtonInGame()
@@ -182,13 +212,25 @@ public class MainSceneController : UIController
 
     }
 
-    public void pauseButton()
+    public void PauseButton()
     {
-
+        StartCoroutine(SmoothFadeTransition(0.3f, ingamePanel, pausePanel));
+        Time.timeScale = 0f;
     }
 
-    public void closePauseButton()
+    public void ClosePauseButton()
     {
+        StartCoroutine(SmoothFadeTransition(0.3f, pausePanel, ingamePanel));
+        Time.timeScale = 1f;
+    }
 
+    public void OpenConfirmWindow()
+    {
+        StartCoroutine(FadeIn(confirmWindow, 0.3f));
+    }
+
+    public void CloseConfirmWindow()
+    {
+        StartCoroutine(FadeOut(confirmWindow, 0.3f));
     }
 }

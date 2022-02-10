@@ -19,7 +19,6 @@ public class GameManager : MonoBehaviour
     public bool isEnemyPresent;
     public bool isPlayerRespawning;
     public bool isUpdatingVolume;
-    public bool isNormalBattleThemePlayed;
     public int currentWave;
     public int bossWave = 6;
     public int currentLife;
@@ -39,11 +38,13 @@ public class GameManager : MonoBehaviour
     public float elementalProwessPoint = 0.2f;
 
     [Header("Statistics")]
+    public int currentScore;
+    public int highestScore;
     public int normalKillCount;
     public int bossKillCount;
     public float totalDamageDealt;
     public float highestDamageDealt;
-    
+
 
     private void Awake()
     {
@@ -57,19 +58,29 @@ public class GameManager : MonoBehaviour
         {
             //Destroy(gameObject);
         }
-
+        highestScore = PlayerPrefs.GetInt("HIGHSCORE");
     }
 
     void Start()
     {
         SetupAudio();
-        PlayBgm("Menu_Main");
+        PlayBgm("Menu_Main");  
     }
 
     // Update is called once per frame
     void Update()
     {
         UpdateVolume();
+    }
+
+    public void StatisticTrackScore()
+    {
+        currentScore = normalKillCount + (bossKillCount * 2);
+        if (currentScore > highestScore)
+        {
+            highestScore = currentScore;
+            PlayerPrefs.SetInt("HIGHSCORE", highestScore);
+        }
     }
 
     public void StatisticTrackDamageDealt(float amount, GameObject _go)
@@ -96,6 +107,8 @@ public class GameManager : MonoBehaviour
             {
                 GameManager.Instance.normalKillCount++;
             }
+
+            StatisticTrackScore();
         }
     }
 
@@ -267,7 +280,7 @@ public class GameManager : MonoBehaviour
     {
         public string name;
         public AudioClip clip;
-        [Range(0f, 1f)] public float volume;
+        [Range(0f, 0.7f)] public float volume = 0.7f;
         [Range(0.1f, 3f)] public float pitch;
         public bool loop;
         [HideInInspector] public AudioSource audioSource;

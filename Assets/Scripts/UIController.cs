@@ -19,8 +19,8 @@ public class UIController : MonoBehaviour
     {
         container.interactable = false;
         container.alpha = 1f;
-        container.DOFade(0f, duration).SetEase(Ease.InQuint);
-        yield return new WaitForSeconds(duration);
+        container.DOFade(0f, duration).SetEase(Ease.InQuint).SetUpdate(true);
+        yield return new WaitForSecondsRealtime(duration);
         container.gameObject.SetActive(false);
         container.interactable = true;
     }
@@ -28,7 +28,7 @@ public class UIController : MonoBehaviour
     public IEnumerator SmoothFadeTransition(float duration, CanvasGroup panel1, CanvasGroup panel2)
     {
         StartCoroutine(FadeOut(panel1, duration));
-        yield return new WaitForSeconds(duration);
+        yield return new WaitForSecondsRealtime(duration);
         StartCoroutine(FadeIn(panel2, duration));
     }
 

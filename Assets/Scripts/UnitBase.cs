@@ -164,6 +164,11 @@ public class UnitBase : MonoBehaviour
         {
             currentChanneling -= Time.deltaTime;
         }
+
+        if (currentShd <= 0)
+        {
+            shdElement = Element.Neutral;
+        }
     }
 
     public void PlaySfxUnit(string[] sfx)
