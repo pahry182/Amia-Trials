@@ -408,6 +408,14 @@ public class UnitBase : MonoBehaviour
         currentHp = maxHp;
         currentMp = maxMp;
         isUnitDead = false;
+
+        foreach (var item in GetComponent<PlayerSkill>().playerSkills)
+        {
+            item.currentCooldown = 0f;
+        }
+
+        GetComponent<PlayerSpell>().sharedCurrentCd = 0f;
+        GetComponent<PlayerSpell>().sharedCd = 0f;
         GetComponentInChildren<Animator>().SetBool("isUnitDead", false);
     }
 
