@@ -77,7 +77,7 @@ public class MainSceneController : UIController
         StartCoroutine(GameManager.Instance._enemySpawnManager.SpawnEnemy());
         //GameManager.Instance.currentLife = GameManager.Instance.setLife;
 
-        yield return new WaitForSeconds(1f);
+        //yield return new WaitForSeconds(1f);
 
         GameManager.Instance.isBattleStarted = true;
     }

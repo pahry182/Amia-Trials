@@ -46,20 +46,23 @@ public class EnemySpawnManager : MonoBehaviour
         yield return new WaitUntil(() => GameManager.Instance.isBattleStarted == true);
         yield return new WaitForSeconds(enemyRespawnDelay);
 
-        GameManager.Instance.isEnemyPresent = true;
-        GameManager.Instance.SetCheckpoint();
-        int select = Random.Range(0, GameManager.Instance._normalEnemyPool.Length);
+        if (GameManager.Instance.isBattleStarted)
+        {
+            GameManager.Instance.isEnemyPresent = true;
+            GameManager.Instance.SetCheckpoint();
+            int select = Random.Range(0, GameManager.Instance._normalEnemyPool.Length);
 
-        if (GameManager.Instance.currentWave % GameManager.Instance.bossWave == 0)
-        {
-            Instantiate(GameManager.Instance._bossEnemyPool[select], new Vector3(Random.Range(-8f, 8f), 0f, 0f), Quaternion.identity);
+            if (GameManager.Instance.currentWave % GameManager.Instance.bossWave == 0)
+            {
+                Instantiate(GameManager.Instance._bossEnemyPool[select], new Vector3(Random.Range(-8f, 8f), 0f, 0f), Quaternion.identity);
+            }
+            else
+            {
+                Instantiate(GameManager.Instance._normalEnemyPool[select], new Vector3(Random.Range(-8f, 8f), 0f, 0f), Quaternion.identity);
+            }
+            _enemy = GameObject.FindGameObjectWithTag("Enemy").GetComponent<UnitBase>();
+            _playerAI.DetectTarget();
         }
-        else
-        {
-            Instantiate(GameManager.Instance._normalEnemyPool[select], new Vector3(Random.Range(-8f, 8f), 0f, 0f), Quaternion.identity);
-        }
-        _enemy = GameObject.FindGameObjectWithTag("Enemy").GetComponent<UnitBase>();
-        _playerAI.DetectTarget();
     }
 
     private void AudioCheck()
