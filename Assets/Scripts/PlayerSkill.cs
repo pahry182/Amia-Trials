@@ -9,8 +9,10 @@ public class PlayerSkill : MonoBehaviour
     public class Skill
     {
         public string skillName;
+        [TextArea] public string description;
         public Image cdFillImage;
         public Image manaFillImage;
+        public GameObject vfx;
         public float additionalChannelTime;
         public float cooldown;
         public float currentCooldown;
@@ -100,6 +102,7 @@ public class PlayerSkill : MonoBehaviour
         }
         else
         {
+            Destroy(Instantiate(currentSkill.vfx, transform.position, Quaternion.identity), 2f);
             _ub.currentMp -= currentSkill.manaCost;
             _ub.Cast(currentSkill.additionalChannelTime);
             _ub.PlaySfxUnit(_ub.castingSfx);

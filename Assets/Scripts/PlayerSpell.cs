@@ -9,9 +9,11 @@ public class PlayerSpell : MonoBehaviour
     public class Spell
     {
         public string spellName;
+        [TextArea] public string description;
         public Image cdFillImage;
         public Image manaFillImage;
         public Element spellElement;
+        public GameObject vfx;
         public float additionalChannelTime;
         public float cooldown;
         public float manaCost;
@@ -197,7 +199,7 @@ public class PlayerSpell : MonoBehaviour
 
     private void DeliverSpellDamage(float _spellDamageAmount)
     {
-        Destroy(Instantiate(specialEffect, _ub._UnitAI.targetPosition.position, Quaternion.identity), 2f);
+        Destroy(Instantiate(currentSpell.vfx, _ub._UnitAI.targetPosition.position, Quaternion.identity), 2f);
         _ub.Cast(currentSpell.additionalChannelTime);
         _ub.currentMp -= currentSpell.manaCost;
         _ub.DealDamage(_spellDamageAmount, true, currentSpell.spellElement);
