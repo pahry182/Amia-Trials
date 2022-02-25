@@ -343,6 +343,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 4348012248323625437, guid: 00de9b69d04bc1d43a39c8a81740b9eb,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 4348275200962121986, guid: 00de9b69d04bc1d43a39c8a81740b9eb,
         type: 3}
       propertyPath: m_fontAsset
@@ -359,6 +364,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4717889689924022998, guid: 00de9b69d04bc1d43a39c8a81740b9eb,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3.3536909
+      objectReference: {fileID: 0}
+    - target: {fileID: 4717889689924022998, guid: 00de9b69d04bc1d43a39c8a81740b9eb,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.24780326
+      objectReference: {fileID: 0}
+    - target: {fileID: 4717889689924022998, guid: 00de9b69d04bc1d43a39c8a81740b9eb,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.67
+      objectReference: {fileID: 0}
+    - target: {fileID: 4717889689924022998, guid: 00de9b69d04bc1d43a39c8a81740b9eb,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.4202
       objectReference: {fileID: 0}
     - target: {fileID: 5224671968014443465, guid: 00de9b69d04bc1d43a39c8a81740b9eb,
         type: 3}
