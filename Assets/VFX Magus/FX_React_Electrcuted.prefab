@@ -4677,7 +4677,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_RenderMode: 4
   m_SortMode: 0
   m_MinParticleSize: 0
@@ -4802,7 +4802,8 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: 834c99069a124aa439d5795c3579843b, type: 3}
 --- !u!4 &3892280995023958375 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 421170, guid: 834c99069a124aa439d5795c3579843b, type: 3}
+  m_CorrespondingSourceObject: {fileID: 421170, guid: 834c99069a124aa439d5795c3579843b,
+    type: 3}
   m_PrefabInstance: {fileID: 3892280995024362581}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7056363381403256858
@@ -4904,7 +4905,8 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: 834c99069a124aa439d5795c3579843b, type: 3}
 --- !u!4 &7056363381403149608 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 421170, guid: 834c99069a124aa439d5795c3579843b, type: 3}
+  m_CorrespondingSourceObject: {fileID: 421170, guid: 834c99069a124aa439d5795c3579843b,
+    type: 3}
   m_PrefabInstance: {fileID: 7056363381403256858}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7334522217535705344
