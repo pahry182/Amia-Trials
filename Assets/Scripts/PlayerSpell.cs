@@ -61,7 +61,7 @@ public class PlayerSpell : MonoBehaviour
     [HideInInspector] public Spell currentSpell = null;
 
     public Spell[] spellList;
-    public GameObject specialEffect;
+    public GameObject mysticFieldVfx;
 
     [Header("Fire Burst")]
     public float fireBurst_fireResDown = 0.16f;
@@ -192,7 +192,8 @@ public class PlayerSpell : MonoBehaviour
         if (_ub.isMysticFielding)
         {
             GameManager.Instance.PlaySfx("Barrier");
-            _ub.currentShd += currentSpell.manaCost;
+            Destroy(Instantiate(mysticFieldVfx, transform.position, Quaternion.identity), 2f);
+            _ub.GainShield((int)currentSpell.manaCost);
             _ub.shdElement = currentSpell.spellElement;
         }
     }

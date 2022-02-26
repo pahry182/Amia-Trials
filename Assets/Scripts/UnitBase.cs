@@ -388,10 +388,23 @@ public class UnitBase : MonoBehaviour
         }
     }
 
+    public void GainShield(int amount)
+    {
+        if (currentShd + amount >= maxShd)
+        {
+            currentShd = maxShd;
+        }
+        else
+        {
+            currentShd += amount;
+        }
+    }
+
     public void LevelUp()
     {
         maxXp = (int)((30 + maxXp) * 1.02);
         maxHp += growthHp;
+        maxShd = maxHp;
         maxMp += growthMp;
         manaRegen += growthManaReg;
         att += growthAtt;

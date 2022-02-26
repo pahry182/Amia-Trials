@@ -108,7 +108,6 @@ public class PlayerSkill : MonoBehaviour
             _ub.PlaySfxUnit(_ub.castingSfx);
             currentSkill.StartCdFill();
 
-
             return currentSkill;
         }
 
